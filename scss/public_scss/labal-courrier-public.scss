@@ -1,0 +1,362 @@
+$yellow: #f8b505;
+$mid: #dd9933;
+$brown: #714703;
+
+$xl: 1200px;
+$lg: 992px;
+$md: 768px;
+$sm: 576px;
+$xs: 0;
+
+.lc {
+    .form-control {
+        height: calc(1.5em + 0.75rem + 2px) !important;
+    }
+    .seperator {
+        width: calc(100% + 60px);
+        border-bottom: 1px solid #9a6618;
+        margin: 30px -30px 30px -30px;
+    }
+    .btn {
+        border-radius: 0 !important;
+    }
+    .btn-mid {
+        background-color: $yellow !important;
+        color: #fff !important;
+    }
+    .btn-outline-mid {
+        border: 1px solid $mid !important;
+        color: $mid !important;
+    }
+    .lc-content {
+        font-family: sans-serif;
+    }
+}
+
+.lc-wizard-container {
+    background-color: #714703;
+    padding: 20px;
+    margin-bottom: 100px;
+    .lc-wizard-wrapper {
+        padding: 30px;
+        border: 1px solid #9a6618;
+        h2 {
+            font-size: 1.5em;
+            color: #fff;
+        }
+    }
+    .validation_message {
+        background: #dc3545 !important;
+        padding: 0 10px;
+        width: 100% !important;
+    }
+    .c-d-arrow {
+        font-size: 15px;
+        margin: auto;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: block;
+        height: 24px;
+    }
+    .c-d-arrow i {
+        color: #f8b505;
+    }
+    #rate-container {
+        border: 1px solid #dd9933 !important;
+        color: #f8b505 !important;
+    }
+    .wpcsr-sc-label span {
+        color: #f8b505 !important;
+        font-size: 1em !important;
+    }
+    #wpcsr-parcels table th {
+        background-color: #dd9933 !important;
+        font-size: 1em !important;
+        border: 0 !important;
+        padding: 10px 15px 10px 15px;
+    }
+    #wpcsr-parcels table td {
+        padding: 10px 15px 10px 15px;
+        border: 0 !important;
+    }
+    button#add_package {
+        background-color: #eeeeee;
+        border: 1px solid #d93;
+        color: #d93;
+        font-weight: bold;
+        font-size: 1em !important;
+        text-transform: capitalize;
+    }
+    button#add_package:hover {
+        background-color: $mid;
+        color: #eee;
+    }
+    input.get_quote {
+        background-color: $mid !important;
+        border: 1px solid $mid !important;
+        font-weight: bold;
+        font-size: 1em !important;
+        text-transform: capitalize !important;
+    }
+    input.get_quote:hover {
+        background-color: $yellow !important;
+    }
+    #parcel-dimension input[type="radio"] {
+        display: none;
+    }
+    .quote_book_wrap {
+        margin-bottom: 15px;
+        float: right;
+    }
+    .lc-select-country {
+        border-radius: 0 !important;
+    }
+
+    table.lc-packages th {
+        background-color: $mid !important;
+        border: 0 !important;
+    }
+
+    table.lc-packages .btn-remove-package {
+        border: 1px solid $mid;
+        color: $mid;
+        cursor: pointer;
+        height: 35px;
+    }
+    table.lc-packages .btn-remove-package:hover {
+        background-color: $mid;
+        color: #eee;
+    }
+    table.lc-packages td {
+        border: 0 !important;
+    }
+    .input-group-text {
+        border-left: 0 !important;
+        border-radius: 0 !important;
+    }
+    .lc-input {
+        border-radius: 0 !important;
+    }
+    .lc-input::placeholder {
+        color: #bbb !important;
+        opacity: 1;
+    }
+
+    .lc-radio {
+        padding: 5px 15px;
+        background-color: #ffffff;
+        border-radius: 20px;
+        margin-right: 15px;
+        min-width: 150px;
+        text-align: center;
+        cursor: pointer;
+        color: $mid;
+        display: inline-block;
+    }
+    .lc-radio.active {
+        background-color: #dd9933 !important;
+        color: #fff !important;
+        box-shadow: inset 0 0 10px #fdbe18;
+    }
+    .lc-radio input {
+        display: none;
+    }
+
+    // VIEW: Wizard
+    .lc-option {
+        background-color: $mid;
+        color: #fff !important;
+    }
+
+    .btn-shipping-option {
+        height: 100%;
+        width: 100%;
+    }
+    .lc-carrier-branding {
+        background-color: $yellow;
+        width: 100px;
+        height: 100px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        margin: auto;
+        img {
+            height: 100px;
+            width: 100px;
+        }
+    }
+    .lc-carrier-rate-details {
+        // float: left;
+        // padding-left: 20px;
+    }
+    .sm-summary {
+        .sm-summary-destination {
+            color: $mid !important;
+            position: relative;
+            div {
+                display: block;
+                margin-left: 45px;
+            }
+        }
+        .sm-destination-a::before {
+            background-size: cover;
+            content: url(../img/dest-a.svg);
+            height: 40px;
+            width: 40px;
+            display: block;
+            color: $mid !important;
+            position: absolute;
+            left: 5px;
+            top: 0;
+            // bottom: 0;
+            // margin: auto;
+        }
+        .sm-destination-b::before {
+            background-size: cover;
+            content: url(../img/dest-b.svg);
+            height: 40px;
+            width: 40px;
+            display: block;
+            color: $mid !important;
+            position: absolute;
+            left: 5px;
+            top: 0;
+            // bottom: 0;
+            // margin: auto;
+        }
+        .sm-parcel::before {
+            background-size: cover;
+            content: url(../img/parcel.svg);
+            height: 40px;
+            width: 40px;
+            display: block;
+            color: $mid !important;
+            position: absolute;
+            left: 5px;
+            top: 0;
+            // bottom: 0;
+            // margin: auto;
+        }
+    }
+
+    .items_fields {
+        padding: 15px;
+        background-color: #dd993357;
+        .package_item {
+            padding: 15px 15px 30px 60px;
+            border: 1px solid $yellow;
+            border-bottom: 0;
+            position: relative;
+            label {
+                color: $yellow;
+            }
+            select {
+                border-radius: 0;
+            }
+            .item_number {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 30px;
+                background: #f8b50585;
+                text-align: center;
+                color: #fff;
+                line-height: 50px;
+                font-weight: bold;
+                font-size: 18px;
+            }
+        }
+        .package_item:last-child {
+            border-bottom: 1px solid $yellow;
+        }
+    }
+}
+
+.lc-loading-screen {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 999999;
+    background-color: $yellow;
+    color: #fff;
+    .wrapper {
+        text-align: center;
+        position: relative;
+        height: 100%;
+        .content {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            width: fit-content;
+            height: fit-content;
+            img {
+                width: 20em;
+            }
+            p {
+                margin-top: 50px;
+                font-size: 3em;
+            }
+        }
+    }
+}
+
+.ui-autocomplete {
+    position: absolute;
+    cursor: default;
+    z-index: 999999999 !important;
+}
+
+#search[type="text"] {
+    width: 400px;
+    box-sizing: border-box;
+    position: absolute;
+    background-color: white;
+    background-repeat: no-repeat;
+    padding: 6px 10px 6px 20px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+    font-size: 24px;
+    color: black;
+}
+
+#search:focus {
+    border: 2px solid #87cefa;
+}
+
+.ui-menu {
+    font-family: sans-serif;
+    background-color: rgba(255, 255, 255, 1);
+    padding: 0 10px;
+}
+
+.entry ul li {
+    list-style-type: none !important;
+}
+.entry ol,
+.entry ul {
+    padding-left: 0 !important;
+}
+
+.phone_numeber_field {
+    padding-left: 52px;
+}
+
+body .wpctp-site-container .lc input[type="text"].phone_numeber_field {
+    padding-left: 52px !important;
+}
+
+.iti.iti--allow-dropdown {
+    width: 100% !important;
+    margin-top: 1rem !important;
+}

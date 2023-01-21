@@ -1,0 +1,230 @@
+AF,Afghanistan,7
+ZA,South Africa,6
+AL,Albania,4
+DZ,Algeria,6
+DE,Germany,1
+AD,Andorra,4
+AO,Angola,7
+AI,Anguilla,7
+AG,Antigua And Barbuda,7
+SA,Saudi Arabia,7
+AR,Argentina,7
+AM,Armenia,7
+AW,Aruba,7
+AU,Australia,7
+AT,Austria,2
+AZ,Azerbaijan,7
+BS,Bahamas,7
+BH,Bahrain,7
+BD,Bangladesh,6
+BB,Barbados,7
+BE,Belgium,1
+BZ,Belize,7
+BM,Bermuda,7
+BT,Bhutan,7
+BY,Belarus,7
+MM,Myanmar,7
+BO,Bolivia,7
+BQ,Bonaire,7
+BA,Bosnia And Herzegovina,4
+BW,Botswana,7
+BN,Brunei,7
+BR,Brazil,7
+BG,Bulgaria,3
+BF,Burkina Faso,7
+BI,Burundi,7
+BJ,Benin,7
+KH,Cambodia,6
+CM,Cameroon,7
+CA,Canada,5
+IC,Canary Islands,7
+CV,Cape Verde,7
+KY,Cayman Islands,7
+CF,Central African Republic,7
+CL,Chile,7
+CN,China,6
+CY,Cyprus,3
+CO,Colombia,7
+KM,Comoros,7
+CG,Congo,7
+CD,Democratic Republic of the Congo,7
+CK,Cook Islands,7
+KP,North Korea,7
+KR,South Korea,6
+CR,Costa Rica,7
+HR,Croatia,3
+CU,Cuba,7
+CW,Cura�ao,7
+CI,Ivory Coast,7
+DK,Denmark,2
+DJ,Djibouti,7
+DO,Dominican Republic,7
+DM,Dominica,7
+EG,Egypt,6
+SV,El Salvador,7
+AE,United Arab Emirates,6
+EC,Ecuador,7
+ER,Eritrea,7
+ES,Spain,1
+EE,Estonia,3
+US,United States,5
+ET,Ethiopia,7
+FK,Falklands,7
+FO,Faroe,7
+FJ,Fiji,7
+FI,Finland,3
+GA,Gabon,7
+GM,Gambia,7
+GH,Ghana,7
+GI,Gibraltar,4
+GB,United Kingdom,1
+GR,Greece,3
+GD,Grenada,7
+GL,Greenland,7
+GP,Guadeloupe,6
+GU,Guam,7
+GT,Guatemala,7
+GG,Guernsey,4
+GW,Guinea-Bissau,7
+GQ,Equatorial Guinea,7
+GN,Guinea,7
+GY,Guyana,7
+GF,French Guiana,6
+GE,Georgia,7
+HT,Haiti,7
+HN,Honduras,7
+HK,Hong Kong,6
+HU,Hungary,3
+IN,India,6
+ID,Indonesia,6
+IQ,Iraq,7
+IR,Iran,7
+IE,Ireland,2
+IS,Iceland,7
+IL,Israel,4
+IT,Italy,1
+JM,Jamaica,7
+JP,Japan,6
+JE,Jersey,4
+JO,Jordan,7
+KZ,Kazakhstan,7
+KE,Kenya,7
+KG,Kyrgyzstan,7
+KI,Kiribati,7
+XK,Kosovo,4
+KW,Kuwait,7
+LA,Laos,7
+LS,Lesotho,7
+LV,Latvia,3
+LB,Lebanon,7
+LY,Libya,7
+LR,Liberia,7
+LI,Liechtenstein,4
+LT,Lithuania,3
+LU,Luxembourg,1
+MO,Macao,7
+MK,North Macedonia,4
+MG,Madagascar,7
+MY,Malaysia,6
+MW,Malawi,7
+MV,Maldives,7
+ML,Mali,7
+MT,Malta,3
+MA,Morocco,6
+MH,Marshall,7
+MQ,Martinique,6
+MU,Mauritius,7
+MR,Mauritania,7
+YT,Mayotte,6
+MX,Mexico,5
+FM,Micronesia,7
+MD,Moldova,4
+MN,Mongolia,7
+MS,Montserrat,7
+ME,Montenegro,4
+MZ,Mozambique,7
+MP,Northern Mariana Islands,7
+NA,Namibia,7
+NR,Nauru,7
+KN,Saint Kitts And Nevis,7
+NI,Nicaragua,7
+NE,Niger,7
+NG,Nigeria,7
+NU,Niue,7
+NC,New Caledonia,7
+NZ,New Zealand,7
+NO,Norway,4
+NP,Nepal,7
+OM,Oman,7
+UG,Uganda,7
+UZ,Uzbekistan,7
+PK,Pakistan,7
+PW,Palau,7
+PA,Panama,7
+PG,Papua New Guinea,7
+PY,Paraguay,7
+NL,Netherlands,1
+PH,Philippines,6
+PL,Poland,2
+PF,Polynesia,7
+PR,Puerto Rico,7
+PT,Portugal,2
+PE,Peru,7
+QA,Qatar,7
+RO,Romania,3
+RU,Russia,7
+RW,Rwanda,7
+RE,Reunion,6
+SH,Saint Helena,7
+SB,Solomon Islands,7
+WS,Samoa,7
+AS,American Samoa,7
+SM,San Marino,4
+ST,Sao Tome And Principe,7
+RS,Serbia,4
+SC,Seychelles,7
+SL,Sierra Leone,7
+SG,Singapore,6
+SK,Slovakia,3
+SI,Slovenia,3
+SO,Somalia,7
+SD,Sudan,7
+LK,Sri Lanka,6
+BL,Saint Barthelemy,7
+KN,Saint Kitts And Nevis,7
+MF,Saint Martin,7
+VC,Saint Vincent and the Grenadines,7
+LC,Saint Lucia,7
+SS,South Sudan,7
+CH,Switzerland,4
+SR,Suriname,7
+SE,Sweden,3
+SZ,Swaziland,7
+SY,Syria,7
+SN,Senegal,7
+TJ,Tajikistan,7
+TZ,Tanzania,7
+TW,Taiwan,6
+TD,Chad,7
+CZ,Czech Republic,2
+TH,Thailand,6
+TL,Timor Leste,6
+TG,Togo,7
+TO,Tonga,7
+TT,Trinidad and Tobago,7
+TN,Tunisia,6
+TM,Turkmenistan,7
+TC,Turks And Caicos Islands,7
+TR,Turkey,4
+TV,Tuvalu,7
+UA,Ukraine,7
+UY,Uruguay,7
+VU,Vanuatu,7
+VA,Vatican,1
+VG,Virgin Islands,7
+VI,Virgin Islands US,7
+VN,Vietnam,6
+VE,Venezuela,7
+YE,Yemen,7
+ZM,Zambia,7
+ZW,Zimbabwe,7

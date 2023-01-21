@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200px" height="65px" viewBox="0 0 1200 65" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group 16</title>
+    <defs>
+        <polygon id="path-1" points="0 0 476 0 476 2 0 2"></polygon>
+    </defs>
+    <g id="Desktop" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="9.-Shipping-Calculator--annex-2" transform="translate(-120.000000, -1117.000000)">
+            <g id="Group-16" transform="translate(120.000000, 1120.000000)">
+                <g id="Group-3" transform="translate(724.000000, 60.000000)">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <g id="Clip-2"></g>
+                    <line x1="476.00021" y1="1" x2="0" y2="1" id="Stroke-1" stroke="#1F180E" mask="url(#mask-2)"></line>
+                </g>
+                <line x1="702" y1="61" x2="43" y2="61" id="Stroke-4" stroke="#1F180E"></line>
+                <path d="M33.2727273,61 L0,61 L0,25.0658937 L9.83019985,43.0243213 L14.3787499,0 L24.9587108,36.020362 L33.2560659,20.4080882 C32.9395002,21.8054299 25.1253244,55.5486425 33.2727273,61" id="Fill-6" fill="#1F180E"></path>
+                <path d="M41.1948052,61 L7.92207792,61 L7.92207792,25.0658937 L17.7522778,43.0243213 L22.3008279,0 L32.8807887,36.020362 L41.1781438,20.4080882 C40.8615781,21.8054299 33.0474023,55.5486425 41.1948052,61 Z" id="Stroke-8" stroke="#1F180E"></path>
+                <path d="M42.01,9.97 C42.01,9.97 42.01,9.99 41.99,10.03" id="Stroke-10" stroke="#1F180E"></path>
+                <path d="M725,61 L706.928571,61 L706.928571,41.5602472 L712.265985,51.2801236 L714.73701,28 L720.469788,47.4907312 L725,39.0113285 C725,39.0113285 720.469788,57.9752832 725,61" id="Fill-12" fill="#1F180E"></path>
+                <path d="M718.97619,61 L702,61 L702,42.738414 L707.013934,51.869207 L709.3352,30 L714.720537,48.3094748 L718.97619,40.3439753 C718.97619,40.3439753 714.720537,58.1585994 718.97619,61 Z" id="Stroke-14" stroke="#1F180E"></path>
+            </g>
+        </g>
+    </g>
+</svg>
