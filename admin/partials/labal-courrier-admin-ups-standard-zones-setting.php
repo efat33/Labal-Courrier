@@ -21,7 +21,11 @@ $rateCategoryObj = new LC_Rate();
 
                             foreach ($zoneObj->get_ups_standard_export_zones() as $zone_id => $zone) :
 
-                                $existingZoneValues = get_option('ups_standard_export_rate_' . $zone_id);
+                                if (isset($user_coeffient_page) && $user_coeffient_page == 1) {
+                                    $existingZoneValues = get_user_meta($_GET['user_id'], 'ups_standard_export_rate_' . $zone_id, true);
+                                } else {
+                                    $existingZoneValues = get_option('ups_standard_export_rate_' . $zone_id);
+                                }
 
                                 // Open accordion on page load
                                 $show = '';
@@ -48,6 +52,15 @@ $rateCategoryObj = new LC_Rate();
                                                 <input type="hidden" value="<?= $zone_id ?>" name="zone_id" />
                                                 <input type="hidden" value="standard" name="service_code" />
                                                 <input type="hidden" value="export" name="shipment_type" />
+
+                                                <?php
+                                                if (isset($user_coeffient_page) && $user_coeffient_page == 1) {
+                                                ?>
+                                                    <input type="hidden" value="1" name="user_coeffient_page" />
+                                                    <input type="hidden" value="<?= $_GET['user_id'] ?>" name="user_id" />
+                                                <?php
+                                                }
+                                                ?>
 
                                                 <div class="row">
                                                     <div class="col-12">
@@ -133,7 +146,11 @@ $rateCategoryObj = new LC_Rate();
 
                             foreach ($zoneObj->get_ups_standard_import_zones() as $zone_id => $zone) :
 
-                                $existingZoneValues = get_option('ups_standard_import_rate_' . $zone_id);
+                                if (isset($user_coeffient_page) && $user_coeffient_page == 1) {
+                                    $existingZoneValues = get_user_meta($_GET['user_id'], 'ups_standard_import_rate_' . $zone_id, true);
+                                } else {
+                                    $existingZoneValues = get_option('ups_standard_import_rate_' . $zone_id);
+                                }
 
                                 // Open accordion on page load
                                 $show = '';
@@ -160,6 +177,15 @@ $rateCategoryObj = new LC_Rate();
                                                 <input type="hidden" value="<?= $zone_id ?>" name="zone_id" />
                                                 <input type="hidden" value="standard" name="service_code" />
                                                 <input type="hidden" value="import" name="shipment_type" />
+
+                                                <?php
+                                                if (isset($user_coeffient_page) && $user_coeffient_page == 1) {
+                                                ?>
+                                                    <input type="hidden" value="1" name="user_coeffient_page" />
+                                                    <input type="hidden" value="<?= $_GET['user_id'] ?>" name="user_id" />
+                                                <?php
+                                                }
+                                                ?>
 
                                                 <div class="row">
                                                     <div class="col-12">

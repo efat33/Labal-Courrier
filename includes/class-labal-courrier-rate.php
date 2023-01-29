@@ -138,6 +138,16 @@ class LC_Rate
 
     public function get_coefficient($shipment_type, $package_type, $packages, $col_zone, $del_zone, $rate)
     {
+        $prof_coef = false;
+        if (is_user_logged_in()) {
+            $user = wp_get_current_user();
+            $roles = (array) $user->roles;
+
+            if (in_array('professional', $roles)) {
+                $prof_coef = true;
+            }
+        }
+
         $this->del_zone = $del_zone;
         $this->col_zone = $col_zone;
 
@@ -170,24 +180,72 @@ class LC_Rate
         $rates = [];
         if ($shipment_type == self::LC_IMP) {
             if ($rate['carrierName'] == 'UPS') {
-                $option = get_option('ups_' . $rate['label'] . '_import_rate_' . $this->col_zone);
+                if ($prof_coef) {
+                    $option = get_user_meta(get_current_user_id(), 'ups_' . $rate['label'] . '_import_rate_' . $this->col_zone, true);
+                    if (empty($option)) {
+                        $option = get_option('ups_' . $rate['label'] . '_import_rate_' . $this->col_zone);
+                    }
+                } else {
+                    $option = get_option('ups_' . $rate['label'] . '_import_rate_' . $this->col_zone);
+                }
             } else {
-                $option = get_option('lc_import_export_rate_' . $this->col_zone);
+                if ($prof_coef) {
+                    $option = get_user_meta(get_current_user_id(), 'lc_import_export_rate_' . $this->col_zone, true);
+                    if (empty($option)) {
+                        $option = get_option('lc_import_export_rate_' . $this->col_zone);
+                    }
+                } else {
+                    $option = get_option('lc_import_export_rate_' . $this->col_zone);
+                }
             }
+
             $rates = $option['import_rate']['coefficient'];
         } elseif ($shipment_type == self::LC_EXP) {
             if ($rate['carrierName'] == 'UPS') {
-                $option = get_option('ups_' . $rate['label'] . '_export_rate_' . $this->del_zone);
+                if ($prof_coef) {
+                    $option = get_user_meta(get_current_user_id(), 'ups_' . $rate['label'] . '_export_rate_' . $this->del_zone, true);
+                    if (empty($option)) {
+                        $option = get_option('ups_' . $rate['label'] . '_export_rate_' . $this->del_zone);
+                    }
+                } else {
+                    $option = get_option('ups_' . $rate['label'] . '_export_rate_' . $this->del_zone);
+                }
             } else {
-                $option = get_option('lc_import_export_rate_' . $this->del_zone);
+                if ($prof_coef) {
+                    $option = get_user_meta(get_current_user_id(), 'lc_import_export_rate_' . $this->del_zone, true);
+                    if (empty($option)) {
+                        $option = get_option('lc_import_export_rate_' . $this->del_zone);
+                    }
+                } else {
+                    $option = get_option('lc_import_export_rate_' . $this->del_zone);
+                }
             }
+
             $rates = $option['export_rate']['coefficient'];
         } else {
-            $option = get_option('lc_normal_rate');
+            if ($prof_coef) {
+                $option = get_user_meta(get_current_user_id(), 'lc_normal_rate', true);
+                if (empty($option)) {
+                    $option = get_option('lc_normal_rate');
+                }
+            } else {
+                $option = get_option('lc_normal_rate');
+            }
+
             $rates = $option['coefficient'];
         }
 
         $coefficient = floatval($rates[$rate_category_id]);
+
+        // if ($rate['serviceCode'] == 65) {
+        //     echo '<br>serviceCode = ' . $rate['serviceCode'];
+        //     echo '<br>shipment_type = ' . $shipment_type;
+        //     echo '<br>del_zone = ' . $del_zone;
+        //     echo '<br>col_zone = ' . $col_zone;
+        //     echo '<br>coefficient = ' . $coefficient;
+        //     exit;
+        // }
+
 
         if (!$coefficient && $rate['carrierName'] != 'UPS') {
             throw new Exception('Sorry, Something went wrong! Please contact us to assist you.');

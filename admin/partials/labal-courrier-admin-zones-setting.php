@@ -3,8 +3,12 @@
 $zoneObj = new LC_Zone();
 $rateCategoryObj = new LC_Rate();
 
+global $wp_roles;
+
+$all_roles = $wp_roles->roles;
 
 ?>
+
 <div class="lc">
     <div class="container">
 
@@ -20,7 +24,18 @@ $rateCategoryObj = new LC_Rate();
                                 <form action="<?php echo admin_url() . '/admin-post.php' ?>" method="post">
                                     <input type="hidden" value="update_normal_lc_rate" name="action" />
                                     <?php
-                                    $normal_rates = get_option('lc_normal_rate' . $zone_id);
+                                    if (isset($user_coeffient_page) && $user_coeffient_page == 1) {
+                                    ?>
+                                        <input type="hidden" value="1" name="user_coeffient_page" />
+                                        <input type="hidden" value="<?= $_GET['user_id'] ?>" name="user_id" />
+                                    <?php
+                                        $normal_rates = get_user_meta($_GET['user_id'], 'lc_normal_rate', true);
+                                    } else {
+                                    ?>
+                                    <?php
+                                        $normal_rates = get_option('lc_normal_rate' . $zone_id);
+                                    }
+
                                     foreach ($rateCategoryObj->get_normal_rate_categories() as $category) : ?>
 
                                         <?php
@@ -80,7 +95,11 @@ $rateCategoryObj = new LC_Rate();
 
                             foreach ($zoneObj->get_zones() as $zone_id => $zone) :
 
-                                $existingZoneValues = get_option('lc_import_export_rate_' . $zone_id);
+                                if (isset($user_coeffient_page) && $user_coeffient_page == 1) {
+                                    $existingZoneValues = get_user_meta($_GET['user_id'], 'lc_import_export_rate_' . $zone_id, true);
+                                } else {
+                                    $existingZoneValues = get_option('lc_import_export_rate_' . $zone_id);
+                                }
 
                                 // Open accordion on page load
                                 $show = '';
@@ -105,6 +124,15 @@ $rateCategoryObj = new LC_Rate();
 
                                                 <input type="hidden" value="update_impoty_export_lc_rate" name="action" />
                                                 <input type="hidden" value="<?= $zone_id ?>" name="zone_id" />
+
+                                                <?php
+                                                if (isset($user_coeffient_page) && $user_coeffient_page == 1) {
+                                                ?>
+                                                    <input type="hidden" value="1" name="user_coeffient_page" />
+                                                    <input type="hidden" value="<?= $_GET['user_id'] ?>" name="user_id" />
+                                                <?php
+                                                }
+                                                ?>
 
                                                 <div class="row">
                                                     <div class="col-6">

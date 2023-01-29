@@ -437,9 +437,14 @@ if (isset($_GET['shipment_id'])) {
 
             if (typeof sender === 'object' && Object.keys(sender).length > 0) {
 
+                jQuery('#sender_trade_type').val(sender.sender_trade_type).change();
                 jQuery('#sender_first_name').val(sender.sender_first_name)[0].dispatchEvent(new Event('input'));
                 jQuery('#sender_last_name').val(sender.sender_last_name)[0].dispatchEvent(new Event('input'));
+                jQuery('#sender_company').val(sender.sender_company)[0].dispatchEvent(new Event('input'));
+                jQuery('#sender_tva_number').val(sender.sender_tva_number)[0].dispatchEvent(new Event('input'));
+                jQuery('#sender_eori_number').val(sender.sender_eori_number)[0].dispatchEvent(new Event('input'));
                 jQuery('#address_sender').val(sender.sender_address)[0].dispatchEvent(new Event('input'));
+                jQuery('#address_sender1').val(sender.sender_address_1)[0].dispatchEvent(new Event('input'));
                 jQuery('#sender_phone_number').val(sender.sender_phone_number)[0].dispatchEvent(new Event('input'));
                 jQuery('#sender_email').val(sender.sender_email)[0].dispatchEvent(new Event('input'));
                 jQuery('#col_country').val(sender.col_country).change();
@@ -461,9 +466,14 @@ if (isset($_GET['shipment_id'])) {
 
             const receiver = receivers.find(element => element.sender_email == search_sender_email);
             if (typeof receiver === 'object' && Object.keys(receiver).length > 0) {
+                jQuery('#receiver_trade_type').val(receiver.sender_trade_type).change();
                 jQuery('#receiver_first_name').val(receiver.sender_first_name)[0].dispatchEvent(new Event('input'));
                 jQuery('#receiver_last_name').val(receiver.sender_last_name)[0].dispatchEvent(new Event('input'));
+                jQuery('#receiver_company').val(receiver.sender_company)[0].dispatchEvent(new Event('input'));
+                jQuery('#receiver_tva_number').val(receiver.sender_tva_number)[0].dispatchEvent(new Event('input'));
+                jQuery('#receiver_eori_number').val(receiver.sender_eori_number)[0].dispatchEvent(new Event('input'));
                 jQuery('#address_receiver').val(receiver.sender_address)[0].dispatchEvent(new Event('input'));
+                jQuery('#address_receiver1').val(receiver.sender_address_1)[0].dispatchEvent(new Event('input'));
                 jQuery('#receiver_phone_number').val(receiver.sender_phone_number)[0].dispatchEvent(new Event('input'));
                 jQuery('#receiver_email').val(receiver.sender_email)[0].dispatchEvent(new Event('input'));
                 jQuery('#del_country').val(receiver.col_country).change();
@@ -718,6 +728,13 @@ if (isset($_GET['shipment_id'])) {
     function component() {
         return {
             init() {
+
+                jQuery(document).on('change', 'select[name="sender_trade_type"]', (event) => {
+                    this.formData.sender_trade_type = event.target.value;
+                })
+                jQuery(document).on('change', 'select[name="receiver_trade_type"]', (event) => {
+                    this.formData.receiver_trade_type = event.target.value;
+                })
 
                 // populate all the fields
                 setTimeout(() => {

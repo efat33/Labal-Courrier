@@ -21,6 +21,14 @@ if (
 ) {
     $r_data = get_transient($_GET['request_id']);
     $s_data = (object) $r_data['old_values'];
+    if ($s_data->col_postcode_or_city != '') {
+        $post_arr = explode('--', $s_data->col_postcode_or_city);
+
+        $s_data->sender_postcode = $post_arr[0];
+        $s_data->sender_suburb = $post_arr[1];
+        $s_data->sender_city = $post_arr[2];
+    }
+
     $errors = array_diff_key($r_data, array_flip(["old_values"]));
 } else if (isset($_GET['request_status']) && $_GET['request_status'] == 'success') {
     $form_updated = 1;
@@ -89,6 +97,14 @@ if (isset($_GET['id'])) {
                     <?php } ?>
 
 
+                    <div class="lc-form-control bg-grey mb-3">
+                        <label for="" class="fw-bold"><?= esc_html_e("Status", "labal-courrier") ?></label>
+                        <select x-model="formData.sender_trade_type" id="sender_trade_type" class="form-control" name="sender_trade_type">
+                            <option value="PR" selected><?= esc_html_e("Je suis un particulier", "labal-courrier") ?></option>
+                            <option value="BU"><?= esc_html_e("Je suis un professionnel", "labal-courrier") ?></option>
+                        </select>
+                    </div>
+
                     <div class="info-form-wrapper info-form-identity lc-grid grid-cols-1 md-grid-cols-2 gap-3 mb-3">
                         <div class="lc-form-control bg-grey" id="sender_first_name">
                             <label for="sender_first_name"><?= esc_html_e("First Name", "labal-courrier") ?></label>
@@ -99,6 +115,20 @@ if (isset($_GET['id'])) {
                             <label for="sender_last_name"><?= esc_html_e("Last Name", "labal-courrier") ?></label>
                             <input x-model="formData.sender_last_name" type="text" name="sender_last_name" placeholder="Doe" class="" :class="{ 'is-invalid': !formvalidation.sender_last_name.validated }" />
                             <div x-show="!formvalidation.sender_last_name.validated" class="w-100 text-white validation_message"><?= esc_html_e("Lastname cannot be empty", "labal-courrier") ?></div>
+                        </div>
+
+                        <div x-show="formData.sender_trade_type == 'BU'" class="lc-form-control bg-grey">
+                            <label for="sender_company"><?= esc_html_e("Company", "labal-courrier") ?></label>
+                            <input x-model="formData.sender_company" type="text" id="sender_company" name="sender_company" placeholder="" class="" :class="{ 'is-invalid': !formvalidation.sender_company.validated && formData.sender_trade_type == 'BU' }" />
+                            <div x-show="!formvalidation.sender_company.validated && formData.sender_trade_type == 'BU'" class="w-100 text-white validation_message"><?= esc_html_e("Please provide a company name with characters less than 25", "labal-courrier") ?></div>
+                        </div>
+                        <div x-show="formData.sender_trade_type == 'BU'" class="lc-form-control bg-grey">
+                            <label for="sender_tva_number"><?= esc_html_e("VAT No.", "labal-courrier") ?></label>
+                            <input x-model="formData.sender_tva_number" value="<?= $old_values[0]->sender_tva_number ?? '' ?>" type="text" class="form-control" placeholder="Numéro de TVA" name="sender_tva_number" id="sender_tva_number" />
+                        </div>
+                        <div x-show="formData.sender_trade_type == 'BU'" class="lc-form-control bg-grey">
+                            <label for="sender_eori_number"><?= esc_html_e("EOI No.", "labal-courrier") ?></label>
+                            <input x-model="formData.sender_eori_number" value="<?= $old_values[0]->sender_eori_number ?? '' ?>" type="text" class="form-control" placeholder="Numéro EORI" name="sender_eori_number" id="sender_eori_number" />
                         </div>
                     </div>
 
@@ -144,9 +174,14 @@ if (isset($_GET['id'])) {
                             <div x-show="!formvalidation.col_postcode_or_city.validated" class="w-100 text-danger validation_message"><?= esc_html_e("This field cannot be empty", "labal-courrier") ?></div>
                         </div>
                         <div class="lc-form-control bg-grey">
-                            <label for="address_sender"><?= esc_html_e("Address Line", "labal-courrier") ?></label>
+                            <label for="address_sender"><?= esc_html_e("Address Line 1", "labal-courrier") ?></label>
                             <input x-model="formData.address_sender" type="text" name="sender_address" placeholder="" class="validate_address" id="address_sender" :class="{ 'is-invalid': !formvalidation.address_sender.validated }" />
-                            <div x-show="!formvalidation.address_sender.validated" class="w-100 text-white validation_message"><?= esc_html_e("This field cannot be empty", "labal-courrier") ?></div>
+                            <div x-show="!formvalidation.address_sender.validated" class="w-100 text-white validation_message"><?= esc_html_e("Please provide an address of less than 35 characters", "labal-courrier") ?></div>
+                        </div>
+                        <div class="lc-form-control bg-grey">
+                            <label for="address_sender1"><?= esc_html_e("Address Line 2", "labal-courrier") ?></label>
+                            <input x-model="formData.address_sender_1" type="text" name="sender_address_1" placeholder="" class="validate_address" id="address_sender1" :class="{ 'is-invalid': !formvalidation.address_sender1.validated }" />
+                            <div x-show="!formvalidation.address_sender1.validated" class="w-100 text-white validation_message"><?= esc_html_e("Please provide an address of less than 35 characters", "labal-courrier") ?></div>
                         </div>
                     </div>
 
@@ -328,8 +363,13 @@ if (isset($_GET['id'])) {
                 col_country: '',
                 col_postcode_or_city: '',
                 address_sender: '<?= isset($s_data->sender_address) ? $s_data->sender_address : "" ?>',
+                address_sender_1: '<?= isset($s_data->sender_address_1) ? $s_data->sender_address_1 : "" ?>',
+                sender_trade_type: '<?= isset($s_data->sender_trade_type) ? $s_data->sender_trade_type : "PR" ?>',
                 sender_phone_code: '',
                 sender_phone_number: '',
+                sender_company: '<?= isset($s_data->sender_company) ? $s_data->sender_company : "" ?>',
+                sender_tva_number: '<?= isset($s_data->sender_tva_number) ? $s_data->sender_tva_number : "" ?>',
+                sender_eori_number: '<?= isset($s_data->sender_eori_number) ? $s_data->sender_eori_number : "" ?>',
                 sender_email: '<?= isset($s_data->sender_email) ? $s_data->sender_email : "" ?>',
             },
             formvalidation: {
@@ -338,6 +378,9 @@ if (isset($_GET['id'])) {
                     validated: true,
                 },
                 sender_last_name: {
+                    validated: true,
+                },
+                sender_company: {
                     validated: true,
                 },
                 sender_trade_type: {
@@ -350,6 +393,9 @@ if (isset($_GET['id'])) {
                     validated: true,
                 },
                 address_sender: {
+                    validated: true,
+                },
+                address_sender1: {
                     validated: true,
                 },
                 sender_phone_code: {
@@ -385,14 +431,37 @@ if (isset($_GET['id'])) {
                 this.formData.col_country = jQuery('#col_country').val();
                 this.formData.col_postcode_or_city = jQuery('#col_postcode_or_city').val();
                 this.formData.sender_phone_code = jQuery('#sender_phone_code').val();
+                const address_sender1 = jQuery('#address_sender1').val();
 
                 for (const [key, item] of Object.entries(this.formData)) {
+
+                    if (key == 'sender_company' || key == 'sender_tva_number' || key == 'sender_eori_number' || key == 'address_sender_1') {
+                        continue;
+                    }
 
                     if (item === '') {
                         this.formvalidation.valid = false;
                         this.formvalidation[key]['validated'] = false;
                         this.validationIds.push(key);
                     }
+                }
+
+                if (this.formData.sender_trade_type === 'BU' && this.formData.sender_company === '' || this.formData.sender_company.length >= 25) {
+                    this.formvalidation.valid = false;
+                    this.formvalidation['sender_company']['validated'] = false;
+                    this.validationIds.push('sender_company');
+                }
+
+                // address validation 
+                if (this.formData.address_sender.length >= 35) {
+                    this.formvalidation.valid = false;
+                    this.formvalidation['address_sender']['validated'] = false;
+                    this.validationIds.push('address_sender');
+                }
+                if (address_sender1.length >= 35) {
+                    this.formvalidation.valid = false;
+                    this.formvalidation['address_sender1']['validated'] = false;
+                    this.validationIds.push('address_sender1');
                 }
 
                 if (this.formvalidation.valid) {

@@ -33,10 +33,10 @@ class Labal_Courrier_Public
 		$this->referral_code_discount = get_option('referral_code_discount', 10) == '' ? 10 : get_option('referral_code_discount', 10);
 		$this->referral_code_limit = get_option('referral_code_limit', 60) == '' ? 60 : get_option('referral_code_limit', 60);
 
-		// $this->stripePublicKey = 'pk_test_cdDNEk2qgWrCh7ENx0JxE90Y';
-		// $this->stripeSecretKey = 'sk_test_o9FZmhS5bbfFMqxNEuWjL4im';
-		$this->stripePublicKey = 'pk_live_51JNFRJCmTAWyJf9RJQndzijEHnEVDNHjxb2KVYW3zMKAbJJO8r11mm2t0iY9hTReWtzjEJIUcmilM414vJrg9UbS00tZ0yN6Mh';
-		$this->stripeSecretKey = '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';
+		$this->stripePublicKey = 'pk_test_cdDNEk2qgWrCh7ENx0JxE90Y';
+		$this->stripeSecretKey = 'sk_test_o9FZmhS5bbfFMqxNEuWjL4im';
+		// $this->stripePublicKey = 'pk_live_51JNFRJCmTAWyJf9RJQndzijEHnEVDNHjxb2KVYW3zMKAbJJO8r11mm2t0iY9hTReWtzjEJIUcmilM414vJrg9UbS00tZ0yN6Mh';
+		// $this->stripeSecretKey = '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';
 	}
 
 	public function lc_remove_admin_bar()
@@ -782,18 +782,30 @@ class Labal_Courrier_Public
 			}
 		}
 
-
 		$sender_first_name = trim($_REQUEST['sender_first_name']);
 		$sender_last_name = trim($_REQUEST['sender_last_name']);
+		$sender_trade_type = trim($_REQUEST['sender_trade_type']);
+		$sender_company = trim($_REQUEST['sender_company']);
+		$sender_tva_number = trim($_REQUEST['sender_tva_number']);
+		$sender_eori_number = trim($_REQUEST['sender_eori_number']);
 		$sender_phone_number = trim($_REQUEST['sender_phone_number']);
 		$sender_email = trim($_REQUEST['sender_email']);
 		$col_country = trim($_REQUEST['col_country']);
 		$col_postcode_or_city = trim($_REQUEST['col_postcode_or_city']);
 		$sender_address = trim($_REQUEST['sender_address']);
+		$sender_address_1 = trim($_REQUEST['sender_address_1']);
 
 		// Check email address is present and valid  
 		if (!is_email($sender_email)) {
 			$errors[] = __("Please enter a valid email", "labal-courrier");
+		}
+
+		// check for unique email address 
+		$table = $wpdb->prefix . 'lc_shipping_addresses';
+		$address = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table WHERE sender_email = '%s'", $sender_email));
+
+		if ($address) {
+			$errors[] = __("The email already exists", "labal-courrier");
 		}
 
 		// if validation fails, then redirect to register page with errors
@@ -803,23 +815,28 @@ class Labal_Courrier_Public
 			wp_safe_redirect(add_query_arg(array(
 				'request_status' => "error",
 				'request_id' => "request_$nonce",
-			), site_url() . '/lc-new-billing'));
+			), site_url() . '/lc-new-shipping'));
 			exit;
 		}
 
 		$insert_data = array(
 			'sender_first_name' => $sender_first_name,
 			'sender_last_name' => $sender_last_name,
+			'sender_trade_type' => $sender_trade_type,
+			'sender_company' => $sender_company,
+			'sender_tva_number' => $sender_tva_number,
+			'sender_eori_number' => $sender_eori_number,
 			'sender_phone_number' => $sender_phone_number,
 			'sender_email' => $sender_email,
 			'col_country' => $col_country,
 			'col_postcode_or_city' => $col_postcode_or_city,
-			'sender_address' => $sender_address
+			'sender_address' => $sender_address,
+			'sender_address_1' => $sender_address_1,
 		);
 
 		if (isset($_REQUEST['address_id'])) {
 			$data = $insert_data;
-			$format = array('%s', '%s', '%d', '%s', '%s', '%s', '%s');
+			$format = array('%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s');
 			$where = ['id' => $_REQUEST['address_id']];
 			$where_format = ['%d'];
 			$wpdb->update($wpdb->prefix . 'lc_shipping_addresses', $data, $where, $format, $where_format);
@@ -829,7 +846,7 @@ class Labal_Courrier_Public
 
 			$insert_data['user_id'] = $user_id;
 			$data = $insert_data;
-			$format = array('%s', '%s', '%d', '%s', '%s', '%s', '%s');
+			$format = array('%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s');
 			$wpdb->insert($table, $data, $format);
 			$insert_id = $wpdb->insert_id;
 		}

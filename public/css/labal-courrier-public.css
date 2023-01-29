@@ -2092,3 +2092,7 @@ ul.lc-ul-shipping-tips li {
 .btn-close {
 	background-color: transparent !important;
 }
+
+.lc-form-control.bg-grey select {
+	background-color: var(--lc-color-grey3);
+}
