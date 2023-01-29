@@ -3276,6 +3276,9 @@ class Labal_Courrier_Public
 
 		if (is_array($ups_rate) && sizeof($ups_rate) > 0) $rates = array_merge($rates, $ups_rate);
 
+		// sort the rates in ascending order of the amount 
+		usort($rates, fn ($a, $b) => $a['amount'] - $b['amount']);
+
 		return $rates;
 	}
 
