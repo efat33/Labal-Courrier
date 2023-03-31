@@ -420,7 +420,7 @@ include_once LABAL_COURRIER_PLUGIN_PATH . 'public/partials/lc-faq.php';
                 let businessDay = mToday.format($format);
 
                 while (
-                    this.holidays.includes(moment(businessDay, "DD-MM-YYYY").format("YYYY-MM-DD")) || mToday.day() === 5 || mToday.day() === 6 ||
+                    this.holidays.includes(moment(businessDay, "DD-MM-YYYY").format("YYYY-MM-DD")) || mToday.day() === 6 ||
                     mToday.isSame(initM, 'day')
                 ) {
 

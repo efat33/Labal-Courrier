@@ -147,7 +147,7 @@ $requirment = $rates['quote_request'];
                     </form>
                 </div>
                 <div class="shipping-offer-bottom">
-                    <div class="shipping-offer-bottom-wrapper lc-grid grid-cols-1 <?= ($rate['insurance'] > 0 || $rate['pickup'] > 0) ? 'lg-grid-cols-3' : 'lg-grid-cols-2' ?> ">
+                    <div class="shipping-offer-bottom-wrapper lc-grid grid-cols-1 <?= ((isset($rate['insurance']) && $rate['insurance']) > 0 || (isset($rate['pickup']) && $rate['pickup']) > 0) ? 'lg-grid-cols-3' : 'lg-grid-cols-2' ?> ">
                         <!-- <div>
                             <p><?= sprintf(__("Transportation (fee): %s", "labal-courrier"), $rate['service_charge'] > 0 ? '€' . $rate['service_charge'] : 0) ?></p>
                             <p><?= sprintf(__("Fuel Surcharge: %s", "labal-courrier"), $rate['fuel_surcharge'] > 0 ? '€' . $rate['fuel_surcharge'] : 0) ?></p>

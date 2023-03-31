@@ -271,7 +271,7 @@ class UPS
             }
 
 
-            $package_total_weight = $package_total_weight + $item['weight'];
+            $package_total_weight = $package_total_weight + (int) $item['weight'];
 
             $PackagesArray[] = $package;
         }

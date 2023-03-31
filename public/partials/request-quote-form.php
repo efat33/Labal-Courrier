@@ -483,8 +483,10 @@ if (isset($_GET['request_id']) && !empty($_GET['request_id'])) {
                 let mToday = moment();
                 let businessDay = mToday.format($format);
 
+
+
                 while (
-                    this.holidays.includes(moment(businessDay, "DD-MM-YYYY").format("YYYY-MM-DD")) || mToday.day() === 5 || mToday.day() === 6 ||
+                    this.holidays.includes(moment(businessDay, "DD-MM-YYYY").format("YYYY-MM-DD")) || mToday.day() === 6 ||
                     mToday.isSame(initM, 'day')
                 ) {
 
@@ -563,6 +565,8 @@ if (isset($_GET['request_id']) && !empty($_GET['request_id'])) {
                 }
 
                 this.holidays = await this.getHolidays();
+
+                // console.log(this.holidays);
 
                 // this.holidays = [
                 //     '2022-03-17',
