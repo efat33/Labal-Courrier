@@ -456,7 +456,7 @@ class DHL
                         'Ship' => [
                             'Shipper' => [
                                 'Contact' => [
-                                    'PersonName' => $data['sender_first_name'] . ' ' . $data['sender_last_name'],
+                                    'PersonName' => $data['sender_first_name'],
                                     'CompanyName' => $data['sender_company_name'],
                                     'PhoneNumber' => $data['sender_phone_number'],
                                 ],
@@ -629,7 +629,7 @@ class DHL
         $recipient = [
             'BusinessPartyTypeCode' => $data['receiver_trade_type'],
             'Contact' => [
-                'PersonName' => $data['receiver_first_name'] . ' ' . $data['receiver_last_name'],
+                'PersonName' => $data['receiver_first_name'],
                 'CompanyName' => $data['receiver_company_name'],
                 'PhoneNumber' => $data['receiver_phone_number'],
                 'EmailAddress' => $data['receiver_email'],
@@ -676,7 +676,7 @@ class DHL
         $shipper = [
             'BusinessPartyTypeCode' => $data['sender_trade_type'],
             'Contact' => [
-                'PersonName' => $data['sender_first_name'] . ' ' . $data['sender_last_name'],
+                'PersonName' => $data['sender_first_name'],
                 'CompanyName' => $data['sender_company_name'],
                 'PhoneNumber' => $data['sender_phone_number'],
                 'EmailAddress' => $data['sender_email'],
@@ -757,7 +757,7 @@ class DHL
         }
 
         $Commodities = [
-            'Description' => !empty($data['shipment_description']) ? $data['shipment_description'] : 'Shipment'
+            'Description' =>  $data['export_reason_type']
         ];
 
         if (!empty($data['total_customs_value']) && $data['total_customs_value'] > 0) {

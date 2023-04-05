@@ -114,17 +114,17 @@ if (count($results) > 0) {
                                     <div class="dropdown-menu dropdown-primary px-2">
 
                                         <?php if ($item->selected_carrier_id == 'CARRIER_UPS') { ?>
-                                            <a target="_blank" data-elementor-open-lightbox="no" class="dropdown-docs print-invoice py-1" data-type="invoice" href="<?= esc_url(site_url()) ?>/wp-content/plugins/labal-courrier/docs/<?= $only_carrier_dir ?>/<?= $item->tracking_number ?>/Documents-expedition-<?= $waybill_number ?>.png"><?= esc_html_e('Label', 'labal-courrier') ?></a>
+                                            <a target="_blank" data-elementor-open-lightbox="no" class="dropdown-docs print-invoice py-1" data-type="invoice" href="<?= esc_url(site_url()) ?>/wp-content/plugins/labal-courrier/docs/<?= $only_carrier_dir ?>/<?= $item->tracking_number ?>/Documents-expedition-<?= $waybill_number ?>.pdf"><?= esc_html_e('Label', 'labal-courrier') ?></a>
                                         <?php } else { ?>
                                             <a target="_blank" class="dropdown-docs print-invoice py-1" data-type="invoice" href="<?= esc_url(site_url()) ?>/wp-content/plugins/labal-courrier/docs/<?= $only_carrier_dir ?>/<?= $item->tracking_number ?>/Documents-expedition-<?= $waybill_number ?>.pdf"><?= esc_html_e('Label', 'labal-courrier') ?></a>
                                         <?php } ?>
 
                                         <?php if ($item->package_type == 'Package') { ?>
-                                            <a target="_blank" class="dropdown-docs print-label py-1" data-type="label" href="<?= esc_url(site_url()) ?>/wp-content/plugins/labal-courrier/docs/dhl/<?= $item->tracking_number ?>/Facture-en-douane-<?= $waybill_number ?>.pdf"><?= esc_html_e('Custom Invoice', 'labal-courrier') ?></a>
+                                            <a target="_blank" class="dropdown-docs print-label py-1" data-type="label" href="<?= esc_url(site_url()) ?>/wp-content/plugins/labal-courrier/docs/<?= $only_carrier_dir ?>/<?= $item->tracking_number ?>/Facture-en-douane-<?= $waybill_number ?>.pdf"><?= esc_html_e('Custom Invoice', 'labal-courrier') ?></a>
                                         <?php } ?>
 
                                         <?php if (isset($invoices_arr[$item->lc_shipment_ID])) { ?>
-                                            <a target="_blank" class="dropdown-docs print-waybill py-1" data-type="waybill" href="<?= esc_url(site_url()) ?>/wp-content/plugins/labal-courrier/docs/dhl/<?= $item->tracking_number ?>/Facture-<?= $invoices_arr[$item->lc_shipment_ID] ?>.pdf"><?= esc_html_e('Invoice', 'labal-courrier') ?></a>
+                                            <a target="_blank" class="dropdown-docs print-waybill py-1" data-type="waybill" href="<?= esc_url(site_url()) ?>/wp-content/plugins/labal-courrier/docs/<?= $only_carrier_dir ?>/<?= $item->tracking_number ?>/Facture-<?= $invoices_arr[$item->lc_shipment_ID] ?>.pdf"><?= esc_html_e('Invoice', 'labal-courrier') ?></a>
                                         <?php } ?>
 
                                     </div>

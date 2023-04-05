@@ -183,19 +183,19 @@ if (isset($_GET['shipment_id'])) {
                         <p class="info-fields-heading mb-2"><?= __("Enter New Address", "labal-courrier") ?></p>
                         <div class="info-form-wrapper info-form-identity lc-grid grid-cols-1 md-grid-cols-3 gap-3 mb-3">
                             <div class="lc-form-control">
-                                <label for="sender_first_name"><?= esc_html_e("First Name", "labal-courrier") ?></label>
+                                <label for="sender_first_name"><?= esc_html_e("Full Name", "labal-courrier") ?></label>
                                 <input x-model="formData.sender_first_name" id="sender_first_name" type="text" name="sender_first_name" placeholder="John" class="" :class="{ 'is-invalid': !formvalidation.sender_first_name.validated }" />
-                                <div x-show="!formvalidation.sender_first_name.validated" class="w-100 text-white validation_message"><?= esc_html_e("Firstname cannot be empty", "labal-courrier") ?></div>
+                                <div x-show="!formvalidation.sender_first_name.validated" class="w-100 text-white validation_message"><?= esc_html_e("Please provide name with characters less than 35", "labal-courrier") ?></div>
                             </div>
-                            <div class="lc-form-control">
+                            <!-- <div class="lc-form-control">
                                 <label for="sender_last_name"><?= esc_html_e("Last Name", "labal-courrier") ?></label>
                                 <input x-model="formData.sender_last_name" id="sender_last_name" type="text" name="sender_last_name" placeholder="Doe" class="" :class="{ 'is-invalid': !formvalidation.sender_last_name.validated }" />
                                 <div x-show="!formvalidation.sender_last_name.validated" class="w-100 text-white validation_message"><?= esc_html_e("Lastname cannot be empty", "labal-courrier") ?></div>
-                            </div>
+                            </div> -->
                             <div x-show="formData.sender_trade_type == 'BU'" class="lc-form-control">
                                 <label for="sender_company"><?= esc_html_e("Company", "labal-courrier") ?></label>
                                 <input x-model="formData.sender_company" type="text" id="sender_company" name="sender_company" placeholder="" class="" :class="{ 'is-invalid': !formvalidation.sender_company.validated && formData.sender_trade_type == 'BU' }" />
-                                <div x-show="!formvalidation.sender_company.validated && formData.sender_trade_type == 'BU'" class="w-100 text-white validation_message"><?= esc_html_e("Please provide a company name with characters less than 25", "labal-courrier") ?></div>
+                                <div x-show="!formvalidation.sender_company.validated && formData.sender_trade_type == 'BU'" class="w-100 text-white validation_message"><?= esc_html_e("Please provide a company name with characters less than 45", "labal-courrier") ?></div>
                             </div>
                             <div x-show="formData.sender_trade_type == 'BU'" class="lc-form-control">
                                 <label for="sender_tva_number"><?= esc_html_e("VAT No.", "labal-courrier") ?></label>
@@ -302,20 +302,20 @@ if (isset($_GET['shipment_id'])) {
                         <p class="info-fields-heading mb-2"><?= __("Enter New Address", "labal-courrier") ?></p>
                         <div class="info-form-wrapper info-form-identity lc-grid grid-cols-1 md-grid-cols-3 gap-3 mb-3">
                             <div class="lc-form-control">
-                                <label for="receiver_first_name"><?= esc_html_e("First Name", "labal-courrier") ?></label>
+                                <label for="receiver_first_name"><?= esc_html_e("Full Name", "labal-courrier") ?></label>
                                 <input x-model="formData.receiver_first_name" id="receiver_first_name" type="text" name="receiver_first_name" placeholder="John" class="" :class="{ 'is-invalid': !formvalidation.receiver_first_name.validated }" />
-                                <div x-show="!formvalidation.receiver_first_name.validated" class="w-100 text-white validation_message">Firstname cannot be empty</div>
+                                <div x-show="!formvalidation.receiver_first_name.validated" class="w-100 text-white validation_message"><?= esc_html_e("Please provide name with characters less than 35", "labal-courrier") ?></div>
                             </div>
-                            <div class="lc-form-control">
+                            <!-- <div class="lc-form-control">
                                 <label for="receiver_last_name"><?= esc_html_e("Last Name", "labal-courrier") ?></label>
                                 <input x-model="formData.receiver_last_name" id="receiver_last_name" type="text" name="receiver_last_name" placeholder="Doe" class="" :class="{ 'is-invalid': !formvalidation.receiver_last_name.validated }" />
                                 <div x-show="!formvalidation.receiver_last_name.validated" class="w-100 text-white validation_message">Lastname cannot be empty</div>
-                            </div>
+                            </div> -->
 
                             <div x-show="formData.receiver_trade_type == 'BU'" class="lc-form-control">
                                 <label for="receiver_company"><?= esc_html_e("Company", "labal-courrier") ?></label>
                                 <input x-model="formData.receiver_company" type="text" id="receiver_company" name="receiver_company" placeholder="" class="" :class="{ 'is-invalid': !formvalidation.receiver_company.validated && formData.receiver_trade_type == 'BU' }" />
-                                <div x-show="!formvalidation.receiver_company.validated && formData.receiver_trade_type == 'BU'" class="w-100 text-white validation_message"><?= esc_html_e("Please provide a company name with characters less than 25", "labal-courrier") ?></div>
+                                <div x-show="!formvalidation.receiver_company.validated && formData.receiver_trade_type == 'BU'" class="w-100 text-white validation_message"><?= esc_html_e("Please provide a company name with characters less than 45", "labal-courrier") ?></div>
                             </div>
                             <div x-show="formData.receiver_trade_type == 'BU'" class="lc-form-control">
                                 <label for="receiver_tva_number"><?= esc_html_e("VAT No.", "labal-courrier") ?></label>
@@ -906,11 +906,6 @@ if (isset($_GET['shipment_id'])) {
                     this.formvalidation['receiver_first_name']['validated'] = false;
                     this.validationIds.push('receiver_first_name');
                 }
-                if (this.formData.receiver_last_name == '') {
-                    this.formvalidation.valid = false;
-                    this.formvalidation['receiver_last_name']['validated'] = false;
-                    this.validationIds.push('receiver_last_name');
-                }
                 if (this.formData.address_receiver == '') {
                     this.formvalidation.valid = false;
                     this.formvalidation['address_receiver']['validated'] = false;
@@ -1006,11 +1001,6 @@ if (isset($_GET['shipment_id'])) {
                     this.formvalidation.valid = false;
                     this.formvalidation['sender_first_name']['validated'] = false;
                     this.validationIds.push('sender_first_name');
-                }
-                if (this.formData.sender_last_name == '') {
-                    this.formvalidation.valid = false;
-                    this.formvalidation['sender_last_name']['validated'] = false;
-                    this.validationIds.push('sender_last_name');
                 }
                 if (this.formData.address_sender == '') {
                     this.formvalidation.valid = false;
@@ -1118,7 +1108,7 @@ if (isset($_GET['shipment_id'])) {
 
                 for (const [key, item] of Object.entries(this.formData)) {
 
-                    if (key == 'sender_company' || key == 'receiver_company' || key == 'sender_id_number' || key == 'receiver_id_number' ||
+                    if (key == 'sender_last_name' || key == 'receiver_last_name' || key == 'sender_company' || key == 'receiver_company' || key == 'sender_id_number' || key == 'receiver_id_number' ||
                         key == 'sender_tva_number' || key == 'sender_eori_number' || key == 'receiver_tva_number' || key == 'receiver_eori_number') {
                         continue;
                     }
@@ -1130,16 +1120,28 @@ if (isset($_GET['shipment_id'])) {
                     }
                 }
 
-                if (this.formData.sender_trade_type === 'BU' && this.formData.sender_company === '' || this.formData.sender_company.length >= 25) {
+                if (this.formData.sender_trade_type === 'BU' && this.formData.sender_company === '' || this.formData.sender_company.length >= 45) {
                     this.formvalidation.valid = false;
                     this.formvalidation['sender_company']['validated'] = false;
                     this.validationIds.push('sender_company');
                 }
 
-                if (this.formData.receiver_trade_type === 'BU' && (this.formData.receiver_company === '' || this.formData.receiver_company.length >= 25)) {
+                if (this.formData.receiver_trade_type === 'BU' && (this.formData.receiver_company === '' || this.formData.receiver_company.length >= 45)) {
                     this.formvalidation.valid = false;
                     this.formvalidation['receiver_company']['validated'] = false;
                     this.validationIds.push('receiver_company');
+                }
+
+                // name length validation 
+                if (this.formData.sender_first_name.length >= 35) {
+                    this.formvalidation.valid = false;
+                    this.formvalidation['sender_first_name']['validated'] = false;
+                    this.validationIds.push('sender_first_name');
+                }
+                if (this.formData.receiver_first_name.length >= 35) {
+                    this.formvalidation.valid = false;
+                    this.formvalidation['receiver_first_name']['validated'] = false;
+                    this.validationIds.push('receiver_first_name');
                 }
 
                 // phone validation 

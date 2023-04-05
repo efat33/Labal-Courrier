@@ -675,7 +675,7 @@ class UPS
         $request['PickupDateInfo'] = $pickupdateinfo;
 
         $pickupaddress['CompanyName'] = $data['sender_company_name'];
-        $pickupaddress['ContactName'] = $data['sender_first_name'] . ' ' . $data['sender_last_name'];
+        $pickupaddress['ContactName'] = $data['sender_first_name'];
         $pickupaddress['AddressLine'] = $data['sender_address'][0];
         $pickupaddress['City'] = $data['sender_city'];
 
@@ -790,20 +790,26 @@ class UPS
         // }
 
         //create json request
-        $shipment['Description'] = $data['shipment_description'] != '' ? $data['shipment_description'] : 'Test Description';  // required 
-        $shipper['Name'] = 'Matthieu Delmas';
-        $shipper['AttentionName'] = 'Matthieu Delmas';
+        $shipment['Description'] = $data['export_reason_type'];  // required 
+
+        $shipper['Name'] = $data['sender_first_name'];
+        $shipper['AttentionName'] = $data['sender_company_name'];
         $shipper['ShipperNumber'] = $this->shipper_number;
-        $address['AddressLine'] = '149 avenue du Maine';
-        $address['City'] = 'PARIS';
-        $address['PostalCode'] = '75014';
-        $address['CountryCode'] = 'FR';
+        $address['AddressLine'] = implode(', ', array_filter($data['sender_address'], fn ($value) => trim($value) != ''));
+        $address['City'] = $data['sender_city'];
+        $address['PostalCode'] = str_replace(' ', '', $data['sender_postcode']);
+
+        if ($data['sender_country_code'] == 'CA' && strlen($address['PostalCode']) == 5) {
+            $address['PostalCode'] = $address['PostalCode'] . 1;
+        }
+
+        $address['CountryCode'] = $data['sender_country_code'];
         $shipper['Address'] = $address;
-        $phone1['Number'] = '33778101479';
+        $phone1['Number'] = $data['sender_phone_number'];
         $shipper['Phone'] = $phone1;
         $shipment['Shipper'] = $shipper;
 
-        $shipto['Name'] = $data['receiver_first_name'] . ' ' . $data['receiver_last_name'];
+        $shipto['Name'] = $data['receiver_first_name'];
         $shipto['AttentionName'] = $data['receiver_company_name'];
 
         $addressTo['AddressLine'] = $data['receiver_address'];
@@ -828,7 +834,7 @@ class UPS
 
         $shipment['ShipTo'] = $shipto;
 
-        $shipfrom['Name'] = $data['sender_first_name'] . ' ' . $data['sender_last_name'];
+        $shipfrom['Name'] = $data['sender_first_name'];
         $shipfrom['AttentionName'] = $data['sender_company_name'];
 
         $addressFrom['AddressLine'] = $data['sender_address'];
@@ -884,7 +890,7 @@ class UPS
 
         $soldTo['Option'] = '01';
         $soldTo['AttentionName'] = $data['receiver_company_name'];
-        $soldTo['Name'] = $data['receiver_first_name'] . ' ' . $data['receiver_last_name'];
+        $soldTo['Name'] = $data['receiver_first_name'];
         $soldToPhone['Number'] = $data['receiver_phone_number'];
         $soldTo['Phone'] = $soldToPhone;
         $soldToAddress['AddressLine'] = $data['receiver_address'][0];
@@ -1192,8 +1198,10 @@ class UPS
                 }
             }
         } catch (Exception $ex) {
-            echo '<pre>';
-            print_r($ex);
+            // echo '<pre>';
+            // print_r($ex);
+
+            return $locations;
         }
 
         return $locations;

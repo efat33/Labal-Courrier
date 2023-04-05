@@ -173,7 +173,7 @@ if (isset($_GET['shipment_id'])) {
             </div>
 
             <?php if ($package_type == 'Package') { ?>
-                <div class="lc-declaration-items-area shadow-sm rounded mb-5 bg-white">
+                <div class="lc-declaration-items-area shadow-sm rounded mb-4 bg-white">
                     <template x-for="[id, item] in Object.entries(formData.items)">
                         <div class="single-declaration-item package_item">
                             <div class="single-declaration-item-top p-4">
@@ -227,9 +227,20 @@ if (isset($_GET['shipment_id'])) {
                     </template>
                 </div>
                 <input type="hidden" id="totalInvoiceVal" name="total_customs_value">
+
+                <div class="lc-form-control">
+                    <div>
+                        <span><?= esc_html_e("Total number of items", "labal-courrier") ?>:</span>
+                        <span id="lc_total_items">0</span>
+                    </div>
+                    <div>
+                        <span><?= esc_html_e("Total value", "labal-courrier") ?>:</span>
+                        <span id="lc_total_value">0</span>
+                    </div>
+                </div>
             <?php } ?>
 
-            <div class="lc-steps-btn-area has-border mt-5 text-center text-md-end">
+            <div class="lc-steps-btn-area has-border mt-4 text-center text-md-end">
                 <a href="<?= esc_url(site_url()) . '/schedule-pickup/?shipment_id=' . $shipment_id ?>" class="btn lc-button lc-btn-back rounded"><?= __("Back", "labal-courrier") ?></a>
                 <button x-on:click.prevent="onSubmit()" type="submit" class="btn lc-button lc-btn-blue rounded ms-2"><?= __("Confirm & Continue", "labal-courrier") ?></button>
             </div>
@@ -304,6 +315,10 @@ if (isset($_GET['shipment_id'])) {
     function component() {
         return {
             init() {
+                this.$watch('formData.items', (value, oldValue) => {
+                    this.onChangeItems();
+                });
+
                 setTimeout(() => {
                     <?php
                     if (isset($errors) && count($errors) > 0) {
@@ -448,6 +463,28 @@ if (isset($_GET['shipment_id'])) {
             },
 
             validationIds: [],
+
+            onChangeItems() {
+                let totalItems = 0;
+                let totalValue = 0;
+
+                for (let i = 0; i < this.formData.items.length; i++) {
+                    const element = this.formData.items[i];
+
+                    if (element.quantity) {
+                        totalItems = totalItems + parseInt(element.quantity);
+                    }
+                    if (element.quantity && element.item_value) {
+                        totalValue = totalValue + parseInt(element.quantity) * parseInt(element.item_value);
+                    }
+                }
+                jQuery("#lc_total_items").text(totalItems);
+                if (totalValue > 0) {
+                    jQuery("#lc_total_value").text(totalValue + "€");
+                } else {
+                    jQuery("#lc_total_value").text(totalValue);
+                }
+            },
 
             onChangePoids(event) {
                 const val = jQuery(event.target).val();
