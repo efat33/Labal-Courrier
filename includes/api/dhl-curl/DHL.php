@@ -516,6 +516,11 @@ class DHL
 
         $ShipmentType = $getQuoteResult['serviceCode'];
 
+        if ($data['is_eu_shipment'] == 1) {
+            $ShipmentType = "U";
+            $data['package_type'] = 'DOCUMENTS';
+        }
+
         $root = [
             'rootElementName' => 'SOAP-ENV:Envelope',
             '_attributes' => [
@@ -756,9 +761,16 @@ class DHL
             $LabelOption['DHLCustomsInvoiceType'] = 'COMMERCIAL_INVOICE';
         }
 
-        $Commodities = [
-            'Description' =>  $data['export_reason_type']
-        ];
+        if ($data['is_eu_shipment'] == 1) {
+            $Commodities = [
+                'Description' =>  $data['export_reason_type']
+            ];
+        } else {
+            $Commodities = [
+                'Description' => ($data['package_type'] == 'NON_DOCUMENTS') ? $data['export_reason_type'] : $data['shipment_description']
+            ];
+        }
+
 
         if (!empty($data['total_customs_value']) && $data['total_customs_value'] > 0) {
             $Commodities['CustomsValue'] = $data['total_customs_value'];

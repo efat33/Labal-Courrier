@@ -7,6 +7,12 @@ header("Expires: 0 "); // Proxies.
 $current_language = get_locale();
 $lc_site_url = $current_language == 'en_US' ? site_url('en') : site_url();
 
+$eu_countries = [
+    'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'FI', 'DE', 'GR',
+    'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PF', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'FR'
+];
+$is_eu_shipment = false;
+
 global $wpdb, $table_prefix;
 $old_values = [];
 if (isset($_GET['shipment_id'])) {
@@ -27,7 +33,9 @@ if (isset($_GET['shipment_id'])) {
         }
     }
 
-
+    if (isset($s_data->sender_country_code) && isset($s_data->receiver_country_code) && in_array($s_data->sender_country_code, $eu_countries) && in_array($s_data->receiver_country_code, $eu_countries)) {
+        $is_eu_shipment = true;
+    }
 
 ?>
 
@@ -45,6 +53,7 @@ if (isset($_GET['shipment_id'])) {
             <input type="hidden" name="current_language" value="<?= $current_language ?>">
             <input type="hidden" name="shipment_id" value="<?= $shipment_id ?>">
             <input type="hidden" name="package_type" value="<?= $package_type ?>">
+            <input type="hidden" name="is_eu_shipment" value="<?= $is_eu_shipment ?>">
 
             <?php
             if (count($errors) > 0) {
@@ -54,7 +63,7 @@ if (isset($_GET['shipment_id'])) {
                         <?php
                         foreach ($errors as $key => $value) {
                             if (!is_array($value)) {
-                                echo '<div class="w-100 mb-3 pt-1 pb-1 text-white common_error validation_message">';
+                                echo '<div class="w-100 mb-3 pt-1 pb-1 common_error validation_message" style="color:red;">';
                                 echo $value;
                                 echo '</div>';
                             }
@@ -64,14 +73,27 @@ if (isset($_GET['shipment_id'])) {
                 </div>
             <?php } ?>
 
-            <div class="lc-declaration-type-area shadow-sm rounded mb-5 bg-white">
+            <?php
+            if ($is_eu_shipment) {
+            ?>
+                <div class="lc-declaration-type-area shadow-sm rounded mb-5 bg-white p-4">
+                    <div class="lc-form-control" id="export_reason_type">
+                        <label for="id_export_reason_type"><?= esc_html_e("Summarize the contents of your shipment", "labal-courrier") ?></label>
+                        <input x-model="formData.export_reason_type" type="text" name="export_reason_type" placeholder="<?= esc_html_e("2 cell phone, 3 women's shorts, 1 boy's jacket_", "labal-courrier") ?>" class="form-control" :class="{ 'is-invalid': !formvalidation.export_reason_type.validated }">
+                        <div x-show="!formvalidation.export_reason_type.validated" class="w-100 validation_message"><?= esc_html_e("Please provide a value of maximum 35 characters", "labal-courrier") ?></div>
 
-                <?php if ($package_type == 'Package') { ?>
-                    <div class="div-own-invoice-area p-4">
-                        <div class="div-own-invoice">
-                            <p class="mb-3"><?= esc_html_e("For all international shipments, it will be necessary to provide a declaration of contents for customs purposes. Without this document printed and attached to the shipping documents, your package will be returned and potentially charged.", "labal-courrier") ?></p>
-                            <p><?= esc_html_e("If you choose to provide your own customs invoice, you take the responsibility for providing a compliant document for the clearance of your goods by the customs services.", "labal-courrier") ?></p>
-                            <!-- <div class="lc-form-control">
+                    </div>
+                </div>
+
+            <?php } else { ?>
+                <div class="lc-declaration-type-area shadow-sm rounded mb-5 bg-white">
+
+                    <?php if ($package_type == 'Package') { ?>
+                        <div class="div-own-invoice-area p-4">
+                            <div class="div-own-invoice">
+                                <p class="mb-3"><?= esc_html_e("For all international shipments, it will be necessary to provide a declaration of contents for customs purposes. Without this document printed and attached to the shipping documents, your package will be returned and potentially charged.", "labal-courrier") ?></p>
+                                <p><?= esc_html_e("If you choose to provide your own customs invoice, you take the responsibility for providing a compliant document for the clearance of your goods by the customs services.", "labal-courrier") ?></p>
+                                <!-- <div class="lc-form-control">
                                 <label for="id_quick_weight"><?= esc_html_e("Do you have your own invoice", "labal-courrier") ?><i class="fa-regular fa-circle-question" data-bs-custom-class="lc-tooltip" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="<?= esc_attr_e("Invoice", "labal-courrier") ?>"></i></label>
                                 <div class="lc-form-control-cr lc-form-control-radio lc-grid gap-4 mt-2 pb-2" id="have_own_invoice">
                                     <label for="own_invoice_yes" class="lcl-radio is-insurance ">
@@ -90,156 +112,157 @@ if (isset($_GET['shipment_id'])) {
                                 <input x-model="formData.own_invoice_file" type="hidden" name="own_invoice_file" class="" />
                                 <div x-show="!formvalidation.own_invoice_file.validated" class="w-100 text-danger validation_message"><?= esc_html_e("This field cannot be empty", "labal-courrier") ?></div>
                             </div> -->
+                            </div>
+                        </div>
+                    <?php } ?>
+
+                    <div class="lc-declaration-type-grid lc-grid grid-cols-1 md-grid-cols-2 gap-2">
+                        <div class="lc-declaration-type p-4">
+                            <?php if ($package_type == 'Document') { ?>
+                                <div class="lc-form-control select-type-document">
+                                    <label for=""><?= esc_html_e("Type of Document", "labal-courrier") ?></label>
+                                    <select name="shipment_description" class="form-control lc-select" id="">
+                                        <option><?= __("Advertising brochures, pamphlets", "labal-courrier") ?></option>
+                                        <option><?= __("Airline tickets - issued/validated", "labal-courrier") ?></option>
+                                        <option><?= __("Annual reports", "labal-courrier") ?></option>
+                                        <option><?= __("Bill of lading", "labal-courrier") ?></option>
+                                        <option><?= __("Blueprints", "labal-courrier") ?></option>
+                                        <option><?= __("Booklets, brochures - non-advertising", "labal-courrier") ?></option>
+                                        <option><?= __("Business cards", "labal-courrier") ?></option>
+                                        <option><?= __("Catalogs", "labal-courrier") ?></option>
+                                        <option><?= __("Certificates", "labal-courrier") ?></option>
+                                        <option><?= __("Charts, graphs", "labal-courrier") ?></option>
+                                        <option><?= __("Checks - cashier", "labal-courrier") ?></option>
+                                        <option><?= __("COMPLETED FORMS", "labal-courrier") ?></option>
+                                        <option><?= __("Contract", "labal-courrier") ?></option>
+                                        <option><?= __("Credit note", "labal-courrier") ?></option>
+                                        <option><?= __("Deeds", "labal-courrier") ?></option>
+                                        <option><?= __("Diplomatic mail", "labal-courrier") ?></option>
+                                        <option><?= __("Diplomatic material", "labal-courrier") ?></option>
+                                        <option><?= __("Documents - general business", "labal-courrier") ?></option>
+                                        <option><?= __("Educational material - printed", "labal-courrier") ?></option>
+                                        <option><?= __("Examination papers", "labal-courrier") ?></option>
+                                        <option><?= __("Identity document", "labal-courrier") ?></option>
+                                        <option><?= __("Invoices - not blank", "labal-courrier") ?></option>
+                                        <option><?= __("Letter, correspondence", "labal-courrier") ?></option>
+                                        <option><?= __("Manual - technical", "labal-courrier") ?></option>
+                                        <option><?= __("Manuscripts", "labal-courrier") ?></option>
+                                        <option><?= __("MEDICAL EXAMINATION RESULT", "labal-courrier") ?></option>
+                                        <option><?= __("Music - printed, manuscript", "labal-courrier") ?></option>
+                                        <option><?= __("Ngatives - including x-rays, films", "labal-courrier") ?></option>
+                                        <option><?= __("Passports", "labal-courrier") ?></option>
+                                        <option><?= __("Photographs", "labal-courrier") ?></option>
+                                        <option><?= __("Photographs - as part of business reports", "labal-courrier") ?></option>
+                                        <option><?= __("Price lists", "labal-courrier") ?></option>
+                                        <option><?= __("Printed matter", "labal-courrier") ?></option>
+                                        <option><?= __("Ship manifest - computer genrated", "labal-courrier") ?></option>
+                                        <option><?= __("Shipping schedules", "labal-courrier") ?></option>
+                                        <option><?= __("Slides", "labal-courrier") ?></option>
+                                        <option><?= __("Visa applications", "labal-courrier") ?></option>
+                                    </select>
+                                </div>
+                            <?php } else { ?>
+                                <div class="lc-form-control select-type-document">
+                                    <label for=""><?= esc_html_e("Type of Package", "labal-courrier") ?></label>
+                                    <select x-model="formData.export_reason_type" name="export_reason_type" class="form-control lc-select" id="export_reason_type">
+                                        <option value="GIFT" label="Gift"><?= __("Gift", "labal-courrier") ?></option>
+                                        <option value="COMMERCIAL_PURPOSE_OR_SALE" label="Commercial"><?= __("Commercial", "labal-courrier") ?></option>
+                                        <option value="PERSONAL_BELONGINGS_OR_PERSONAL_USE" label="Personal, Not for Resale"><?= __("Personal, Not for Resale", "labal-courrier") ?></option>
+                                        <option value="SAMPLE" label="Sample"><?= __("Sample", "labal-courrier") ?></option>
+                                        <option value="RETURN" label="Return for Repair"><?= __("Return", "labal-courrier") ?></option>
+                                        <option value="RETURN_TO_ORIGIN" label="Return after Repair"><?= __("Return to origin", "labal-courrier") ?></option>
+                                        <option value="WARRANTY_REPLACEMENT" label="Warranty Replacement"><?= __("Warranty Replacement", "labal-courrier") ?></option>
+                                        <option value="USED_EXHIBITION_GOODS_TO_ORIGIN" label="Warranty Replacement"><?= __("Used Exhibition Goods to Origin", "labal-courrier") ?></option>
+                                        <option value="INTERCOMPANY_USE" label="Intercompany use only"><?= __("Intercompany use only", "labal-courrier") ?></option>
+                                    </select>
+                                </div>
+                            <?php } ?>
+                            <div class="lc-form-control mt-3 declaration-remarks">
+                                <label for=""><?= esc_html_e("Remarks", "labal-courrier") ?></label>
+                                <textarea x-model="formData.special_pickup_instructions" class="form-control" rows="3" maxlength="40" name="remarks" id="remarks"></textarea>
+                            </div>
+                        </div>
+                        <?php if ($package_type == 'Package') { ?>
+                            <div class="lc-declaration-type-right px-4 px-md-0 py-0 py-md-4">
+                                <p x-show="formData.export_reason_type == 'PERSONAL_BELONGINGS_OR_PERSONAL_USE'"><?= __("You are sending used personal effects that are more than six months old. You may be asked by customs in the country of arrival to fill out an affidavit. We recommend that you download this template and fill it out and sign it. It is important to print it and attach it to the rest of your shipping documents that you will give to the carrier", "labal-courrier") ?></p>
+                                <p x-show="formData.export_reason_type == 'GIFT'"><?= __("You send a gift. Please note that this does not exempt you from paying any customs duties in the country of arrival. For shipments between individuals to France, customs duties are systematically applied from 45 euros of declared value. ", "labal-courrier") ?></p>
+
+                                <a x-show="formData.export_reason_type == 'PERSONAL_BELONGINGS_OR_PERSONAL_USE'" class="btn btn-lc-download mb-4 mb-md-0 mt-3" id="" href="<?php echo LABAL_COURRIER_PLUGIN_URL . 'docs/declaration_sur_l_honneur.pdf' ?>" download=""><i class="fa-solid fa-download"></i> <?= __("Download", "labal-courrier") ?></a>
+                            </div>
+                        <?php } ?>
+                    </div>
+
+                </div>
+
+                <?php if ($package_type == 'Package') { ?>
+                    <div class="lc-declaration-items-area shadow-sm rounded mb-4 bg-white">
+                        <template x-for="[id, item] in Object.entries(formData.items)">
+                            <div class="single-declaration-item package_item">
+                                <div class="single-declaration-item-top p-4">
+                                    <div class="lc-form-control" id="insurance_value">
+                                        <label for="id_insurance_value"><?= esc_html_e("Description of Item", "labal-courrier") ?> <span x-text="parseInt(id) + 1"></span></label>
+                                        <template x-if="id == 0">
+                                            <p class="fs-6 mb-2"><?= __("Description of each item in your shipment", "labal-courrier") ?> <a href="" class="lc-link text-decoration-underline"><?= __("Learn More", "labal-courrier") ?></a></p>
+                                        </template>
+                                        <input x-model="item.item_description" type="text" data-id="item_description" :name="'item['+id+'][item_description]'" :id="'package_description_'+id" class="form-control" :class="{ 'is-invalid': !formvalidation.items[id]?.item_description.validated }">
+                                        <div x-show="!formvalidation.items[id]?.item_description.validated" class="w-100 validation_message"><?= esc_html_e("This field cannot be empty", "labal-courrier") ?></div>
+
+                                    </div>
+                                </div>
+                                <div class="single-declaration-item-bottom p-4">
+                                    <div class="lc-grid-declaration-item lc-grid grid-cols-1 md-grid-cols-2 gap-2 gap-md-3">
+                                        <div class="lc-form-control">
+                                            <label for=""><?= esc_html_e("Quantity", "labal-courrier") ?></label>
+                                            <input x-model="item.quantity" type="text" data-id="quantity" :name="'item['+id+'][quantity]'" :id="'package_quantity_'+id" class="form-control validate_number_int" :class="{ 'is-invalid': !formvalidation.items[id]?.quantity.validated }">
+                                            <div x-show="!formvalidation.items[id]?.quantity.validated" class="w-100 text-white validation_message"><?= esc_html_e("This field cannot be empty", "labal-courrier") ?></div>
+                                        </div>
+                                        <div class="lc-form-control">
+                                            <label for=""><?= esc_html_e("Value per unit in euros", "labal-courrier") ?></label>
+                                            <input x-model="item.item_value" type="text" data-id="item_value" :name="'item['+id+'][item_value]'" :id="'package_item_value_'+id" class="form-control validate_number" :class="{ 'is-invalid': !formvalidation.items[id]?.item_value.validated }">
+                                            <div x-show="!formvalidation.items[id]?.item_value.validated" class="w-100 text-white validation_message"><?= esc_html_e("This field cannot be empty", "labal-courrier") ?></div>
+                                        </div>
+                                        <div class="lc-form-control">
+                                            <label for=""><?= esc_html_e("Custom Code (optional)", "labal-courrier") ?></label>
+                                            <input x-model="item.commodity_code" type="text" data-id="commodity_code" :name="'item['+id+'][commodity_code]'" :id="'package_commodity_code_'+id" class="form-control">
+                                        </div>
+                                        <div class="lc-form-control">
+                                            <label for=""><?= esc_html_e("Country of Origin", "labal-courrier") ?></label>
+                                            <select x-model="item.item_origin" required class="form-control lc-select-country ccd-select-country" :name="'item['+id+'][item_origin]'" :id="'package_item_origin_'+id" aria-label="Example select with button addon">
+                                                <option value="" selected><?= esc_html_e("Choix du pays", "labal-courrier") ?></option>
+                                                <?php foreach ($countries as $code => $name) : ?>
+                                                    <option value="<?= $code ?>"><?= $name ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                            <div x-show="!formvalidation.items[id]?.item_origin.validated" class="w-100 text-white validation_message"><?= esc_html_e("This field cannot be empty", "labal-courrier") ?></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="lc-form-control add-duplicate-package text-end">
+                                        <label for="" style="opacity: 0;"><?= esc_html_e("Options", "labal-courrier") ?></label>
+                                        <div class="add-duplicate-package-options">
+                                            <span><i class="fa-solid fa-plus"></i><a x-on:click.prevent="addPackages()" href="#" class="ms-1"><?= esc_html_e("Add Another Item", "labal-courrier") ?></a></span>
+                                            <span><i class="fa-regular fa-trash-can"></i><a x-on:click.prevent="removePackage(id)" href="#" class="ms-1"><?= esc_html_e("Delete Item", "labal-courrier") ?></a></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <input type="hidden" id="totalInvoiceVal" name="total_customs_value">
+
+                    <div class="lc-form-control">
+                        <div>
+                            <span><?= esc_html_e("Total number of items", "labal-courrier") ?>:</span>
+                            <span id="lc_total_items">0</span>
+                        </div>
+                        <div>
+                            <span><?= esc_html_e("Total value", "labal-courrier") ?>:</span>
+                            <span id="lc_total_value">0</span>
                         </div>
                     </div>
                 <?php } ?>
 
-                <div class="lc-declaration-type-grid lc-grid grid-cols-1 md-grid-cols-2 gap-2">
-                    <div class="lc-declaration-type p-4">
-                        <?php if ($package_type == 'Document') { ?>
-                            <div class="lc-form-control select-type-document">
-                                <label for=""><?= esc_html_e("Type of Document", "labal-courrier") ?></label>
-                                <select name="shipment_description" class="form-control lc-select" id="">
-                                    <option><?= __("Advertising brochures, pamphlets", "labal-courrier") ?></option>
-                                    <option><?= __("Airline tickets - issued/validated", "labal-courrier") ?></option>
-                                    <option><?= __("Annual reports", "labal-courrier") ?></option>
-                                    <option><?= __("Bill of lading", "labal-courrier") ?></option>
-                                    <option><?= __("Blueprints", "labal-courrier") ?></option>
-                                    <option><?= __("Booklets, brochures - non-advertising", "labal-courrier") ?></option>
-                                    <option><?= __("Business cards", "labal-courrier") ?></option>
-                                    <option><?= __("Catalogs", "labal-courrier") ?></option>
-                                    <option><?= __("Certificates", "labal-courrier") ?></option>
-                                    <option><?= __("Charts, graphs", "labal-courrier") ?></option>
-                                    <option><?= __("Checks - cashier", "labal-courrier") ?></option>
-                                    <option><?= __("COMPLETED FORMS", "labal-courrier") ?></option>
-                                    <option><?= __("Contract", "labal-courrier") ?></option>
-                                    <option><?= __("Credit note", "labal-courrier") ?></option>
-                                    <option><?= __("Deeds", "labal-courrier") ?></option>
-                                    <option><?= __("Diplomatic mail", "labal-courrier") ?></option>
-                                    <option><?= __("Diplomatic material", "labal-courrier") ?></option>
-                                    <option><?= __("Documents - general business", "labal-courrier") ?></option>
-                                    <option><?= __("Educational material - printed", "labal-courrier") ?></option>
-                                    <option><?= __("Examination papers", "labal-courrier") ?></option>
-                                    <option><?= __("Identity document", "labal-courrier") ?></option>
-                                    <option><?= __("Invoices - not blank", "labal-courrier") ?></option>
-                                    <option><?= __("Letter, correspondence", "labal-courrier") ?></option>
-                                    <option><?= __("Manual - technical", "labal-courrier") ?></option>
-                                    <option><?= __("Manuscripts", "labal-courrier") ?></option>
-                                    <option><?= __("MEDICAL EXAMINATION RESULT", "labal-courrier") ?></option>
-                                    <option><?= __("Music - printed, manuscript", "labal-courrier") ?></option>
-                                    <option><?= __("Ngatives - including x-rays, films", "labal-courrier") ?></option>
-                                    <option><?= __("Passports", "labal-courrier") ?></option>
-                                    <option><?= __("Photographs", "labal-courrier") ?></option>
-                                    <option><?= __("Photographs - as part of business reports", "labal-courrier") ?></option>
-                                    <option><?= __("Price lists", "labal-courrier") ?></option>
-                                    <option><?= __("Printed matter", "labal-courrier") ?></option>
-                                    <option><?= __("Ship manifest - computer genrated", "labal-courrier") ?></option>
-                                    <option><?= __("Shipping schedules", "labal-courrier") ?></option>
-                                    <option><?= __("Slides", "labal-courrier") ?></option>
-                                    <option><?= __("Visa applications", "labal-courrier") ?></option>
-                                </select>
-                            </div>
-                        <?php } else { ?>
-                            <div class="lc-form-control select-type-document">
-                                <label for=""><?= esc_html_e("Type of Package", "labal-courrier") ?></label>
-                                <select x-model="formData.export_reason_type" name="export_reason_type" class="form-control lc-select" id="export_reason_type">
-                                    <option value="GIFT" label="Gift"><?= __("Gift", "labal-courrier") ?></option>
-                                    <option value="COMMERCIAL_PURPOSE_OR_SALE" label="Commercial"><?= __("Commercial", "labal-courrier") ?></option>
-                                    <option value="PERSONAL_BELONGINGS_OR_PERSONAL_USE" label="Personal, Not for Resale"><?= __("Personal, Not for Resale", "labal-courrier") ?></option>
-                                    <option value="SAMPLE" label="Sample"><?= __("Sample", "labal-courrier") ?></option>
-                                    <option value="RETURN" label="Return for Repair"><?= __("Return", "labal-courrier") ?></option>
-                                    <option value="RETURN_TO_ORIGIN" label="Return after Repair"><?= __("Return to origin", "labal-courrier") ?></option>
-                                    <option value="WARRANTY_REPLACEMENT" label="Warranty Replacement"><?= __("Warranty Replacement", "labal-courrier") ?></option>
-                                    <option value="USED_EXHIBITION_GOODS_TO_ORIGIN" label="Warranty Replacement"><?= __("Used Exhibition Goods to Origin", "labal-courrier") ?></option>
-                                    <option value="INTERCOMPANY_USE" label="Intercompany use only"><?= __("Intercompany use only", "labal-courrier") ?></option>
-                                </select>
-                            </div>
-                        <?php } ?>
-                        <div class="lc-form-control mt-3 declaration-remarks">
-                            <label for=""><?= esc_html_e("Remarks", "labal-courrier") ?></label>
-                            <textarea x-model="formData.special_pickup_instructions" class="form-control" rows="3" maxlength="40" name="remarks" id="remarks"></textarea>
-                        </div>
-                    </div>
-                    <?php if ($package_type == 'Package') { ?>
-                        <div class="lc-declaration-type-right px-4 px-md-0 py-0 py-md-4">
-                            <p x-show="formData.export_reason_type == 'PERSONAL_BELONGINGS_OR_PERSONAL_USE'"><?= __("You are sending used personal effects that are more than six months old. You may be asked by customs in the country of arrival to fill out an affidavit. We recommend that you download this template and fill it out and sign it. It is important to print it and attach it to the rest of your shipping documents that you will give to the carrier", "labal-courrier") ?></p>
-                            <p x-show="formData.export_reason_type == 'GIFT'"><?= __("You send a gift. Please note that this does not exempt you from paying any customs duties in the country of arrival. For shipments between individuals to France, customs duties are systematically applied from 45 euros of declared value. ", "labal-courrier") ?></p>
-
-                            <a x-show="formData.export_reason_type == 'PERSONAL_BELONGINGS_OR_PERSONAL_USE'" class="btn btn-lc-download mb-4 mb-md-0 mt-3" id="" href="<?php echo LABAL_COURRIER_PLUGIN_URL . 'docs/declaration_sur_l_honneur.pdf' ?>" download=""><i class="fa-solid fa-download"></i> <?= __("Download", "labal-courrier") ?></a>
-                        </div>
-                    <?php } ?>
-                </div>
-
-            </div>
-
-            <?php if ($package_type == 'Package') { ?>
-                <div class="lc-declaration-items-area shadow-sm rounded mb-4 bg-white">
-                    <template x-for="[id, item] in Object.entries(formData.items)">
-                        <div class="single-declaration-item package_item">
-                            <div class="single-declaration-item-top p-4">
-                                <div class="lc-form-control" id="insurance_value">
-                                    <label for="id_insurance_value"><?= esc_html_e("Description of Item", "labal-courrier") ?> <span x-text="parseInt(id) + 1"></span></label>
-                                    <template x-if="id == 0">
-                                        <p class="fs-6 mb-2"><?= __("Description of each item in your shipment", "labal-courrier") ?> <a href="" class="lc-link text-decoration-underline"><?= __("Learn More", "labal-courrier") ?></a></p>
-                                    </template>
-                                    <input x-model="item.item_description" type="text" data-id="item_description" :name="'item['+id+'][item_description]'" :id="'package_description_'+id" class="form-control" :class="{ 'is-invalid': !formvalidation.items[id]?.item_description.validated }">
-                                    <div x-show="!formvalidation.items[id]?.item_description.validated" class="w-100 validation_message"><?= esc_html_e("This field cannot be empty", "labal-courrier") ?></div>
-
-                                </div>
-                            </div>
-                            <div class="single-declaration-item-bottom p-4">
-                                <div class="lc-grid-declaration-item lc-grid grid-cols-1 md-grid-cols-2 gap-2 gap-md-3">
-                                    <div class="lc-form-control">
-                                        <label for=""><?= esc_html_e("Quantity", "labal-courrier") ?></label>
-                                        <input x-model="item.quantity" type="text" data-id="quantity" :name="'item['+id+'][quantity]'" :id="'package_quantity_'+id" class="form-control validate_number_int" :class="{ 'is-invalid': !formvalidation.items[id]?.quantity.validated }">
-                                        <div x-show="!formvalidation.items[id]?.quantity.validated" class="w-100 text-white validation_message"><?= esc_html_e("This field cannot be empty", "labal-courrier") ?></div>
-                                    </div>
-                                    <div class="lc-form-control">
-                                        <label for=""><?= esc_html_e("Value per unit in euros", "labal-courrier") ?></label>
-                                        <input x-model="item.item_value" type="text" data-id="item_value" :name="'item['+id+'][item_value]'" :id="'package_item_value_'+id" class="form-control validate_number" :class="{ 'is-invalid': !formvalidation.items[id]?.item_value.validated }">
-                                        <div x-show="!formvalidation.items[id]?.item_value.validated" class="w-100 text-white validation_message"><?= esc_html_e("This field cannot be empty", "labal-courrier") ?></div>
-                                    </div>
-                                    <div class="lc-form-control">
-                                        <label for=""><?= esc_html_e("Custom Code (optional)", "labal-courrier") ?></label>
-                                        <input x-model="item.commodity_code" type="text" data-id="commodity_code" :name="'item['+id+'][commodity_code]'" :id="'package_commodity_code_'+id" class="form-control">
-                                    </div>
-                                    <div class="lc-form-control">
-                                        <label for=""><?= esc_html_e("Country of Origin", "labal-courrier") ?></label>
-                                        <select x-model="item.item_origin" required class="form-control lc-select-country ccd-select-country" :name="'item['+id+'][item_origin]'" :id="'package_item_origin_'+id" aria-label="Example select with button addon">
-                                            <option value="" selected><?= esc_html_e("Choix du pays", "labal-courrier") ?></option>
-                                            <?php foreach ($countries as $code => $name) : ?>
-                                                <option value="<?= $code ?>"><?= $name ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                        <div x-show="!formvalidation.items[id]?.item_origin.validated" class="w-100 text-white validation_message"><?= esc_html_e("This field cannot be empty", "labal-courrier") ?></div>
-                                    </div>
-                                </div>
-
-                                <div class="lc-form-control add-duplicate-package text-end">
-                                    <label for="" style="opacity: 0;"><?= esc_html_e("Options", "labal-courrier") ?></label>
-                                    <div class="add-duplicate-package-options">
-                                        <span><i class="fa-solid fa-plus"></i><a x-on:click.prevent="addPackages()" href="#" class="ms-1"><?= esc_html_e("Add Another Item", "labal-courrier") ?></a></span>
-                                        <span><i class="fa-regular fa-trash-can"></i><a x-on:click.prevent="removePackage(id)" href="#" class="ms-1"><?= esc_html_e("Delete Item", "labal-courrier") ?></a></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-                <input type="hidden" id="totalInvoiceVal" name="total_customs_value">
-
-                <div class="lc-form-control">
-                    <div>
-                        <span><?= esc_html_e("Total number of items", "labal-courrier") ?>:</span>
-                        <span id="lc_total_items">0</span>
-                    </div>
-                    <div>
-                        <span><?= esc_html_e("Total value", "labal-courrier") ?>:</span>
-                        <span id="lc_total_value">0</span>
-                    </div>
-                </div>
             <?php } ?>
-
             <div class="lc-steps-btn-area has-border mt-4 text-center text-md-end">
                 <a href="<?= esc_url(site_url()) . '/schedule-pickup/?shipment_id=' . $shipment_id ?>" class="btn lc-button lc-btn-back rounded"><?= __("Back", "labal-courrier") ?></a>
                 <button x-on:click.prevent="onSubmit()" type="submit" class="btn lc-button lc-btn-blue rounded ms-2"><?= __("Confirm & Continue", "labal-courrier") ?></button>
@@ -411,7 +434,7 @@ if (isset($_GET['shipment_id'])) {
             showError: false,
             errorMessage: [],
             formData: {
-                export_reason_type: 'GIFT',
+                export_reason_type: '<?= $is_eu_shipment ? '' : 'GIFT' ?>',
                 remarks: '',
                 insurance: '',
                 insurance_value: '',
@@ -589,60 +612,52 @@ if (isset($_GET['shipment_id'])) {
                 // get all the values 
                 const totalInvoiceVal = jQuery('#totalInvoiceVal').val();
 
-                // do packages validation 
-                if (this.formData.items.length > 0 && this.package_type == 'Package') {
-                    for (const key in this.formData.items) {
-                        const package = this.formData.items[key];
-                        const vPackage = this.formvalidation.items[key];
+                <?php
+                if ($is_eu_shipment) {
+                ?>
 
-                        if (package.item_description == '') {
-                            this.formvalidation.valid = false;
-                            vPackage.item_description.validated = false;
-                            this.validationIds.push('package_description_' + key);
-                        }
-                        if (package.quantity == '') {
-                            this.formvalidation.valid = false;
-                            vPackage.quantity.validated = false;
-                            this.validationIds.push('package_quantity_' + key);
-                        }
-                        if (package.item_value == '') {
-                            this.formvalidation.valid = false;
-                            vPackage.item_value.validated = false;
-                            this.validationIds.push('package_item_value_' + key);
-                        }
-                        // if (package.net_weight == '' || package.net_weight < .1) {
-                        //     this.formvalidation.valid = false;
-                        //     vPackage.net_weight.validated = false;
-                        //     this.validationIds.push('id="package_net_weight_' + key);
-                        // }
-                        const origin = jQuery('#package_item_origin_' + key).val();
-                        if (origin == '') {
-                            this.formvalidation.valid = false;
-                            vPackage.item_origin.validated = false;
-                            this.validationIds.push('package_item_origin_' + key);
-                        }
+                    if (this.formData.export_reason_type == '' || this.formData.export_reason_type.length > 35) {
+                        this.formvalidation.valid = false;
+                        this.formvalidation.export_reason_type.validated = false;
+                        this.validationIds.push('export_reason_type');
                     }
 
-                    // if (totalInvoiceVal < 0 || totalInvoiceVal == 0) {
-                    //     this.formvalidation.valid = false;
-                    //     this.formvalidation.totalInvoiceVal = false;
-                    //     this.validationIds.push('totalInvoiceVal');
-                    // }
-                }
+                <?php } else { ?>
+                    // do packages validation 
+                    if (this.formData.items.length > 0 && this.package_type == 'Package') {
+                        for (const key in this.formData.items) {
+                            const package = this.formData.items[key];
+                            const vPackage = this.formvalidation.items[key];
 
-
-
-                // if (!this.formData.have_own_invoice) {
-                //     this.formvalidation.valid = false;
-                //     this.formvalidation.have_own_invoice.validated = false;
-                //     this.validationIds.push('have_own_invoice');
-                // }
-
-                // if (this.formData.have_own_invoice && this.formData.have_own_invoice == 1 && jQuery('#input_upload_invoice').get(0).files.length === 0) {
-                //     this.formvalidation.valid = false;
-                //     this.formvalidation.own_invoice_file.validated = false;
-                //     this.validationIds.push('upload_invoice');
-                // }
+                            if (package.item_description == '') {
+                                this.formvalidation.valid = false;
+                                vPackage.item_description.validated = false;
+                                this.validationIds.push('package_description_' + key);
+                            }
+                            if (package.quantity == '') {
+                                this.formvalidation.valid = false;
+                                vPackage.quantity.validated = false;
+                                this.validationIds.push('package_quantity_' + key);
+                            }
+                            if (package.item_value == '') {
+                                this.formvalidation.valid = false;
+                                vPackage.item_value.validated = false;
+                                this.validationIds.push('package_item_value_' + key);
+                            }
+                            // if (package.net_weight == '' || package.net_weight < .1) {
+                            //     this.formvalidation.valid = false;
+                            //     vPackage.net_weight.validated = false;
+                            //     this.validationIds.push('id="package_net_weight_' + key);
+                            // }
+                            const origin = jQuery('#package_item_origin_' + key).val();
+                            if (origin == '') {
+                                this.formvalidation.valid = false;
+                                vPackage.item_origin.validated = false;
+                                this.validationIds.push('package_item_origin_' + key);
+                            }
+                        }
+                    }
+                <?php } ?>
 
                 if (this.formvalidation.valid) {
                     // submit the form

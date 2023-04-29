@@ -11,6 +11,15 @@ $message = isset($_GET['m']) ? $_GET['m'] : '';
 global $wpdb, $table_prefix;
 $lc_shipment = $wpdb->get_row("SELECT * FROM " . $table_prefix . "lc_shipments WHERE lc_shipment_ID = '$order_id'", ARRAY_A);
 
+$eu_countries = [
+    'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'FI', 'DE', 'GR',
+    'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PF', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'FR'
+];
+$is_eu_shipment = false;
+
+if (in_array($lc_shipment['sender_country_code'], $eu_countries) && in_array($lc_shipment['receiver_country_code'], $eu_countries)) {
+    $is_eu_shipment = true;
+}
 // $dir = LABAL_COURRIER_PLUGIN_PATH . 'docs/ups/1z1661964290';
 // $b64Doc = chunk_split(base64_encode(file_get_contents($dir . '/Facture-en-douane-1z1661964290.pdf')));
 
@@ -44,7 +53,9 @@ $lc_shipment = $wpdb->get_row("SELECT * FROM " . $table_prefix . "lc_shipments W
             <div class="mb-3">
                 <p class="fw-bold mb-2"><?= __("Your Documents To Print", "labal-courrier") ?></p>
                 <a class="btn btn-lc-download mb-2 mb-sm-0" id="label_btn" href="<?php echo LABAL_COURRIER_PLUGIN_URL . '/docs/dhl/' . $quote_id . '/label.pdf' ?>" download=""><i class="fa-solid fa-download"></i> <?= __("Shipping Documents", "labal-courrier") ?></a>
-                <a class="btn btn-lc-download mb-2 mb-sm-0" id="invoice_btn" href="<?php echo LABAL_COURRIER_PLUGIN_URL . '/docs/dhl/' . $quote_id . '/invoice.pdf' ?>" download=""><i class="fa-solid fa-download"></i> <?= __("Custom Invoice", "labal-courrier") ?></a>
+                <?php if (!$is_eu_shipment) { ?>
+                    <a class="btn btn-lc-download mb-2 mb-sm-0" id="invoice_btn" href="<?php echo LABAL_COURRIER_PLUGIN_URL . '/docs/dhl/' . $quote_id . '/invoice.pdf' ?>" download=""><i class="fa-solid fa-download"></i> <?= __("Custom Invoice", "labal-courrier") ?></a>
+                <?php } ?>
             </div>
 
             <p class="fw-bold mb-2"><?= __("Your Invoice", "labal-courrier") ?></p>
@@ -98,7 +109,7 @@ $lc_shipment = $wpdb->get_row("SELECT * FROM " . $table_prefix . "lc_shipments W
 
                         $('#lc_invoice_btn').attr('href', doc_url + response.carrier_dir + "/" + response.id + "/Facture-" + response.invoice_no + ".pdf")
                     } else if (response.status == 'fail') {
-                        window.location.href = "<?= site_url() . '/error-page/' ?>";
+                        // window.location.href = "<?= site_url() . '/error-page/' ?>";
                     }
                 }
             });

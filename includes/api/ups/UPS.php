@@ -790,7 +790,7 @@ class UPS
         // }
 
         //create json request
-        $shipment['Description'] = $data['export_reason_type'];  // required 
+        $shipment['Description'] = ($data['package_type'] == 'NON_DOCUMENTS') ? $data['export_reason_type'] : $data['shipment_description'];  // required 
 
         $shipper['Name'] = $data['sender_first_name'];
         $shipper['AttentionName'] = $data['sender_company_name'];

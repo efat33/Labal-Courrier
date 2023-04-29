@@ -27,7 +27,7 @@ class Labal_Courrier_Public
 
 		$this->eu_countries = [
 			'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'FI', 'DE', 'GR',
-			'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PF', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE'
+			'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PF', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'FR'
 		];
 
 		$this->referral_code_discount = get_option('referral_code_discount', 10) == '' ? 10 : get_option('referral_code_discount', 10);
@@ -1563,14 +1563,19 @@ class Labal_Courrier_Public
 
 		if (empty($shipments)) return $output;
 
-		if ($shipments->package_type == 'Package' && !isset($d['item'])) {
+		// if ($d['is_eu_shipment'] && ($d['export_reason_type'] == '' || strlen($d['export_reason_type']) > 35)) {
+		// 	$output['errors'][] = __("Please provide shipment summery within 35 characters", "labal-courrier");
+		// 	return $output;
+		// }
+
+		if ($shipments->package_type == 'Package' && !$d['is_eu_shipment'] && !isset($d['item'])) {
 			$output['errors'][] = 'Le contenu du package ne peut pas être vide';
 			return $output;
 		}
 
 		// do validation for package_type = Package
-		if ($shipments->package_type == 'Package' && $d['have_own_invoice'] != 1) {
-			$packages = unserialize($shipments->packages);
+		if ($shipments->package_type == 'Package' && !$d['is_eu_shipment']) {
+			// $packages = unserialize($shipments->packages);
 
 			$items = $d['item'];
 
@@ -2082,7 +2087,6 @@ class Labal_Courrier_Public
 
 	public function create_shipment_order()
 	{
-
 		global $wpdb, $table_prefix;
 		if (session_status() === PHP_SESSION_NONE) {
 			session_start();
@@ -3009,6 +3013,11 @@ class Labal_Courrier_Public
 			mkdir($dir);
 		}
 
+		$is_eu_shipment = false;
+		if (in_array($shipment->sender_country_code, $this->eu_countries) && in_array($shipment->receiver_country_code, $this->eu_countries)) {
+			$is_eu_shipment = true;
+		}
+
 		if ($shipment->selected_carrier_id == 'CARRIER_UPS') {
 			foreach ($api_response['label'] as $key => $item) {
 				file_put_contents($dir . '/rotated-Documents-expedition-' . $waybill_number . '-' . $key . '.png', base64_decode($item));
@@ -3040,7 +3049,7 @@ class Labal_Courrier_Public
 		}
 		// $attachments = array($dir . '/label.pdf', $dir . '/lc_invoice.pdf');
 
-		if ($shipment->package_type == 'Package') {
+		if ($shipment->package_type == 'Package' && !$is_eu_shipment) {
 			// if ($shipment->selected_carrier_id == 'CARRIER_UPS') {
 			// 	$this->generate_custom_invoice($dir, $shipment, $waybill_number, $api_response);
 			// } else {
@@ -3301,6 +3310,12 @@ class Labal_Courrier_Public
 		// return $apiResponse;
 		// print_r($data);
 		// die;
+
+		$is_eu_shipment = false;
+		if (in_array($data->sender_country_code, $this->eu_countries) && in_array($data->receiver_country_code, $this->eu_countries)) {
+			$is_eu_shipment = true;
+		}
+
 		$ar = [
 			'lc_shipment_ID' => $data->lc_shipment_ID,
 
@@ -3362,6 +3377,8 @@ class Labal_Courrier_Public
 			'vat_amount' => $data->vat_amount,
 
 			'get_quote_result' => $data->get_quote_result,
+
+			'is_eu_shipment' => $is_eu_shipment,
 		];
 
 		if ($data->selected_carrier_id == 'CARRIER_DHL') {
